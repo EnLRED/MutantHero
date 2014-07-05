@@ -25,6 +25,49 @@ local Models = {
 	"models/player/charple.mdl"
 }
 
+function GM:Initialize()
+	util.PrecacheSound("npc/stalker/stalker_scream1.wav")
+	util.PrecacheSound("npc/crow/idle3.wav")
+	util.PrecacheSound("music/hl2_song3.mp3")
+	util.PrecacheSound("music/radio1.mp3")
+	util.PrecacheSound("music/ravenholm_1.mp3")
+
+	SetGlobalString("timetoend", tostring(ROUND_SETTIME))
+	SetGlobalString("timetoendsec", tostring(SECONDS_ROUND_SETTIME))
+	SetGlobalBool("round_started", ROUND_STARTED)
+	
+	util.AddNetworkString("pointshop_toserv")
+	net.Receive("pointshop_toserv",pshop_handler) 
+end
+
+function GM:Think()
+
+end
+
+function GM:PlayerSpawn(ply) --COMMMMMMMIT
+	if ply:Team() == TEAM_HUMANS then
+		ply:SetMoney(150)
+	end
+end
+
+function pshop_handler(ln, ply)
+	Class = net.ReadTable()
+	
+	if Class.Cost<ply:GetMoney() then
+		if Class.IsAmmo then
+			Player:GiveAmmo(Class.Num, Class.ClassName, True) 
+			ply:SetMoney(ply:GetMoney()-Class.Cost)
+		else
+			Player:Give(Class.ClassName)
+			ply:SetMoney(ply:GetMoney()-Class.Cost)
+		end
+	end
+end
+
+
+
+
+
 
 
 
