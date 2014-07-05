@@ -44,9 +44,9 @@ function GM:Think()
 end
 
 function GM:PlayerSpawn(ply) --COMMMMMMMIT
-	if ply:Team() == TEAM_HUMANS then
+	--if ply:Team() == TEAM_HUMANS then
 		ply:SetMoney(150)
-	end
+	--end
 end
 
 function pshop_handler(ln, ply)
