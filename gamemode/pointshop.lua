@@ -1,7 +1,5 @@
 AddCSLuaFile()
 
-local points = 150
-
 function open_Shop()
 	local weps = weapons.GetList()
 	local ammo = {
@@ -83,8 +81,8 @@ function open_Shop()
 	buy:SetText("Buy")
 	buy.DoClick = function()
 		if tobuy then
-			if points >= tobuy.Cost then
-				points = points - tobuy.Cost
+			if LocalPlayer():GetMoney() >= tobuy.Cost then
+				LocalPlayer():SetMoney(LocalPlayer():GetMoney() - tobuy.Cost)
 				
 				local ammo = false
 				if tobuy.IsAmmo then ammo = true end
@@ -142,14 +140,14 @@ function open_Shop()
 	info:SetFont("mutanthero_font1")
 	info:SetText(" ")
 	info.Think = function()
-		info:SetText(points .. "$")
+		info:SetText(LocalPlayer():GetMoney() .. "$")
 		info:SizeToContents()
 	end
 	
 	local info = vgui.Create("DModelPanel", win)
 	info:SetPos(280, 70)
 	info:SetModel(" ")
-	info:SetSize(150, 150)
+	info:SetSize(140, 140)
 	info:SetCamPos(Vector(20, 20, 0))
 	info:SetLookAt(Vector(0, 0, 0))
 	info.Think = function()
