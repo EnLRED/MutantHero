@@ -17,6 +17,7 @@ local Models = {
 }
 
 util.AddNetworkString("pointshop_toserv")
+util.AddNetworkString("froms_toclient_check")
 
 function GM:Initialize()
 	util.PrecacheSound("npc/stalker/stalker_scream1.wav")
@@ -39,6 +40,8 @@ end
 function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	--if ply:Team() == TEAM_HUMANS then
 		ply:SetMoney(150)
+		ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
+		ply:SetupHands()
 	--end
 end
 
@@ -50,6 +53,11 @@ function pshop_handler(ln, ply)
 			ply:GiveAmmo(Class.Num, Class.ClassName, true) 
 			ply:SetMoney(ply:GetMoney() - Class.Cost)
 		else
+			net.Start("froms_toclient_check")
+				net.WriteString(tostring(ply:GetWeapon(Class.ClassName)))
+			net.Send(ply)
+			
+			if tostring(ply:GetWeapon(Class.ClassName)) != "[NULL Entity]" then ply:ChatPrint("You already have this weapon!") return end
 			ply:Give(Class.ClassName)
 			ply:SetMoney(ply:GetMoney() - Class.Cost)
 		end
