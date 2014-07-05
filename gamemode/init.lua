@@ -24,7 +24,7 @@ local Models = {
 	"models/player/zombie_fast.mdl",
 	"models/player/charple.mdl"
 }
-
+util.AddNetworkString("pointshop_toserv")
 function GM:Initialize()
 	util.PrecacheSound("npc/stalker/stalker_scream1.wav")
 	util.PrecacheSound("npc/crow/idle3.wav")
@@ -36,7 +36,6 @@ function GM:Initialize()
 	SetGlobalString("timetoendsec", tostring(SECONDS_ROUND_SETTIME))
 	SetGlobalBool("round_started", ROUND_STARTED)
 	
-	util.AddNetworkString("pointshop_toserv")
 	net.Receive("pointshop_toserv",pshop_handler) 
 end
 
@@ -53,7 +52,7 @@ end
 function pshop_handler(ln, ply)
 	Class = net.ReadTable()
 	
-	if Class.Cost<ply:GetMoney() then
+	if Class.Cost <= ply:GetMoney() then
 		if Class.IsAmmo then
 			Player:GiveAmmo(Class.Num, Class.ClassName, True) 
 			ply:SetMoney(ply:GetMoney()-Class.Cost)
