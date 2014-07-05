@@ -28,3 +28,7 @@ function meta:GetClassString()
 		end
 	end
 end
+
+function meta:SetupDataTables()
+	self:NetworkVar("Float", 0, "Money") 
+end
