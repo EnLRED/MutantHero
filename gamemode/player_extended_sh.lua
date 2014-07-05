@@ -29,10 +29,10 @@ function meta:GetClassString()
 	end
 end
 
-function meta:SetPoints(pts)
-	self:SetDTInt(1,pts)
+function meta:SetMoney(mon)
+	self:SetDTInt(1,mon)
 end
 
-function meta:GetPoints()
+function meta:GetMoney()
 	return self:GetDTInt(1)
 end
