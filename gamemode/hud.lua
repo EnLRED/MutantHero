@@ -144,7 +144,7 @@ local function draw3DText(txt, x, y, sx, sy, ang, font)
 end
 
 function GM:HUDPaint()
-	if LocalPlayer():Team() == TEAM_SPECTATOR then return false end
+	if LocalPlayer():Team() == TEAM_SPECTATOR then return end
 
 	local sw = surface.ScreenWidth()--ScrW()
 	local sh = surface.ScreenHeight()--ScrH()
@@ -170,31 +170,21 @@ function GM:HUDPaint()
 	
 	surface.SetDrawColor(Color(50, 50, 50, 200))
 	
-	local time = GetGlobalString("timetoend")
-	local SECONDS_ROUND_SETTIME = GetGlobalString("timetoendsec")
+	local time_minutes = GetGlobalString("timetoend")
+	local time_seconds = GetGlobalString("timetoendsec")
 	
 	surface.DrawRect(sh / 25, sw / 2.15, sh / 2.5, sw / 12.5)
 	
 	draw.DrawText("HP", "mutanthero_font1", sh / 2.9, sw / 1.96, Color(255, 255, 255))
 	draw.DrawText("B", "mutanthero_font1", sh / 2.9, sw / 2.12, Color(255, 255, 255))
 	
-	if LocalPlayer():Team() == 2 then
-		Current = math.Approach(Current, LocalPlayer():Health() / 10500, 1)
-	elseif LocalPlayer():Team() == 1 then
-		Current = math.Approach(Current, LocalPlayer():Health() / 3000, 1)
-	end
-	
-	Current2 = math.Approach(Current2, LocalPlayer():Armor() / 600, 1)
-	
 	surface.SetDrawColor(Color(255, 0, 0))
 	
 	surface.DrawOutlinedRect((sh / 18) - 2, (sw / 1.94) - 2, (sw / 6.3) + 6, (sh / 30) + 4)
-	surface.DrawRect(sh / 18, sw / 1.94, (sw - 1000) * Current, sw / 52)
 	
 	surface.SetDrawColor(Color(0, 0, 255))
 	
 	surface.DrawOutlinedRect((sh / 18) - 2, (sw / 2.1) - 2, (sw / 6.3) + 6, (sh / 30) + 4)
-	surface.DrawRect(sh / 18, sw / 2.1, (sw - 1000) * Current2, sw / 52)
 	
 	surface.SetDrawColor(Color(255, 0, 255))
 	
@@ -208,6 +198,8 @@ function GM:HUDPaint()
 		surface.DrawCircle((sw / 2) - 0.4, sh / 2, sh / 70, Color(0, 255, 0))
 	end
 	
+	//------------------------------------------------------------lal-----------------\\
+	
 	if LocalPlayer():Team() == 2 then ---//mutant's hud
 		for k, v in pairs(team.GetPlayers(1)) do
 			local pos = (v:GetPos() + Vector(0, 0, 50)):ToScreen()
@@ -215,6 +207,8 @@ function GM:HUDPaint()
 			surface.DrawCircle(pos.x, pos.y, sh / 170, Color(255, 0, 0))
 		end
 	end
+	
+	
 	
 	if LocalPlayer():Team() == 1 then ---///human's helmet settings
 		if zvision then
@@ -316,12 +310,12 @@ function GM:HUDPaint()
 		end
 	end
 	
-	if tonumber(SECONDS_ROUND_SETTIME) >= 10 then
+	if tonumber(time_seconds) >= 10 then
 		--draw.DrawText(time .. ":" .. tonumber(SECONDS_ROUND_SETTIME), "mutanthero_font2", sh / 2.2, sw / 2.12, Color(255, 255, 255, 150))
 		draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
-		draw3DText("End in: " .. time .. ":" .. tonumber(SECONDS_ROUND_SETTIME), (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
+		draw3DText("End in: " .. time_minutes .. ":" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
 	else
 		draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
-		draw3DText("End in: " .. time .. ":0" .. tonumber(SECONDS_ROUND_SETTIME), (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
+		draw3DText("End in: " .. time_minutes .. ":0" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
 	end
 end

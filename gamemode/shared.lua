@@ -5,6 +5,7 @@ AddCSLuaFile()
 
 if CLIENT then
 	include("hud.lua")
+	include("pointshop.lua")
 elseif SERVER then
 
 end
