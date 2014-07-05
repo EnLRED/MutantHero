@@ -310,12 +310,12 @@ function GM:HUDPaint()
 		end
 	end
 	
-	if tonumber(time_seconds) >= 10 then
+	//if tonumber(time_seconds) >= 10 then
 		--draw.DrawText(time .. ":" .. tonumber(SECONDS_ROUND_SETTIME), "mutanthero_font2", sh / 2.2, sw / 2.12, Color(255, 255, 255, 150))
-		draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
-		draw3DText("End in: " .. time_minutes .. ":" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
-	else
-		draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
-		draw3DText("End in: " .. time_minutes .. ":0" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
-	end
+		//draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
+		//draw3DText("End in: " .. time_minutes .. ":" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
+	//else
+		//draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
+		//draw3DText("End in: " .. time_minutes .. ":0" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
+	//end
 end
