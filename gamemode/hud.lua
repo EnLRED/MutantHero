@@ -68,6 +68,23 @@ surface.CreateFont("mutanthero_smallf", {
 	--outline = true,
 })
 
+surface.CreateFont("mutanthero_verysmallf", {
+	font = "Arial",
+	size = ScrH() / 70,
+	weight = 1500,
+	blursize = 0,
+	scanlines = 0,
+	antialias = true,
+	underline = false,
+	italic = false,
+	strikeout = false,
+	symbol = false,
+	rotary = false,
+	--shadow = true,
+	additive = false,
+	--outline = true,
+})
+
 local function GetCoordiantes(ent)
     local min, max = ent:OBBMins(), ent:OBBMaxs()
 	
@@ -181,6 +198,7 @@ function GM:HUDPaint()
 	surface.SetDrawColor(Color(255, 0, 0))
 	
 	surface.DrawOutlinedRect((sh / 18) - 2, (sw / 1.94) - 2, (sw / 6.3) + 6, (sh / 30) + 4)
+	//surface.DrawRect((sh / 18) - 2, (sw / 1.94) - 2, LocalPlayer():Health() / LocalPlayer():GetMaxHealth(), (sh / 30) + 4)
 	
 	surface.SetDrawColor(Color(0, 0, 255))
 	
@@ -233,7 +251,7 @@ function GM:HUDPaint()
 		surface.DrawTexturedRectRotated(sw / 25, sh / 7, sw / 1.15, sh / 7, 2)
 		surface.DrawTexturedRectRotated(sw / 1, sh / 7, sw / 1.15, sh / 7, -2)
 	
-		if tr.Entity:IsPlayer() and not LocalPlayer():HelmetBroken() then
+		if tr.Entity:IsPlayer() then
 			if tr.Entity:Team() == 2 then
 				surface.SetDrawColor(Color(255, 0, 0))
 				
@@ -285,28 +303,10 @@ function GM:HUDPaint()
 			surface.DrawTexturedRect(sw / 1.3, sh / 5, sh / 3, sw / 4)
 		end
 	
-		if not LocalPlayer():HelmetBroken() then
-			draw.SimpleText("", "mutanthero_font1", 5, 5, Color(255, 255, 255, 255), 1, 2)
-			draw3DText("Helmet system status: OK", (sw / 20) + math.tan(CurTime() * math.random(-2, 2)) / 2, (sh / 10) + math.tan(CurTime() * math.random(-2, 2)) / 2, 1, 1, -2, "mutanthero_font1")
-		else
-			surface.SetTexture(surface.GetTextureID("decals/blood6"))
-			surface.DrawTexturedRect(sw / 4, sh / 3, sh / 5, sw / 5)
-			
-			surface.SetTexture(surface.GetTextureID("decals/blood3"))
-			surface.DrawTexturedRect(sw / 2, sh / 2, sh / 3, sw / 3)
-		
-			draw.SimpleText("", "mutanthero_font1", 5, 5, Color(255, 0, 0, 255), 1, 2)
-			draw3DText("Helmet system status: BAD", (sw / 20) + math.tan(CurTime() * math.random(-2, 2)) / 2, (sh / 10) + math.tan(CurTime() * math.random(-2, 2)) / 2, 1, 1, -2, "mutanthero_font1")
-			draw.SimpleText("", "mutanthero_font1", 5, 5, Color(255, 0, 0, 255), 1, 2)
-			draw3DText("Nightvision is broken!", (sw / 2) + math.tan(CurTime() * math.random(-2, 2)) / 2, (sh / 10) + math.tan(CurTime() * math.random(-2, 2)) / 2, 1, 1, 3, "mutanthero_font1")
-		end
-	
 		for k, v in pairs(team.GetPlayers(1)) do
 			local pos = (v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1")) + Vector(0, 0, 20)):ToScreen()
 		
-			if v != LocalPlayer() and not LocalPlayer():HelmetBroken() then
-				draw.DrawText(v:Nick(), "ChatFont", pos.x, pos.y, Color(0, 255, 0), TEXT_ALIGN_CENTER)
-			end
+			draw.DrawText(v:Nick(), "ChatFont", pos.x, pos.y, Color(0, 255, 0), TEXT_ALIGN_CENTER)
 		end
 	end
 	
