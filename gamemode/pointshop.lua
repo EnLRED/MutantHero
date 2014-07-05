@@ -39,6 +39,8 @@ function open_Shop()
 	cost:SetMinWidth(30)
 	cost:SetMaxWidth(30)
 	weps_t.OnClickLine = function(parent, line, isselected)
+		surface.PlaySound("buttons/blip1.wav")
+	
 		for k, v in pairs(weps) do
 			if line:GetValue(1) == v.PrintName then tobuy = v end
 		end
@@ -60,6 +62,8 @@ function open_Shop()
 	cost:SetMinWidth(30)
 	cost:SetMaxWidth(30)
 	ammo_t.OnClickLine = function(parent, line, isselected)
+		surface.PlaySound("buttons/blip1.wav")
+	
 		for k, v in pairs(weps) do
 			if line:GetValue(1) == v.PrintName then tobuy = v end
 		end
@@ -118,6 +122,17 @@ function open_Shop()
 	info.Think = function()
 		if tobuy then
 			info:SetText(tobuy.PrintName)
+			info:SizeToContents()
+		end
+	end
+	
+	local info = vgui.Create("DLabel", win)
+	info:SetPos(300, 170)
+	info:SetFont("mutanthero_verysmallf")
+	info:SetText(" ")
+	info.Think = function()
+		if tobuy then
+			info:SetText("Cost: " .. tobuy.Cost)
 			info:SizeToContents()
 		end
 	end
