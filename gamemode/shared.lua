@@ -4,6 +4,12 @@
 
 include("player_info.lua")
 
+if CLIENT then
+	include("hud.lua")
+elseif SERVER then
+
+end
+
 GM.Name = "Mutant Hero"
 GM.Author = "HK47"
 GM.Email = ""
