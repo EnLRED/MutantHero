@@ -6,10 +6,11 @@ AddCSLuaFile()
 if CLIENT then
 	include("hud.lua")
 	include("pointshop.lua")
+	include("playerExtended_Cl.lua")
 elseif SERVER then
-
+	include("playerExtended_Sv.lua")
 end
-include("player_info.lua")
+include("playerExtended_Sh.lua")
 
 GM.Name = "Mutant Hero"
 GM.Author = "HK47"
