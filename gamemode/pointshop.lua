@@ -82,15 +82,11 @@ function open_Shop()
 	buy.DoClick = function()
 		if tobuy then
 			if LocalPlayer():GetMoney() >= tobuy.Cost then
-				LocalPlayer():SetMoney(LocalPlayer():GetMoney() - tobuy.Cost)
-				
 				local ammo = false
 				if tobuy.IsAmmo then ammo = true end
 				
 				net.Start("pointshop_toserv")
-					net.WriteString(tobuy.ClassName)
-					net.WriteBit(ammo)
-					net.WriteEntity(LocalPlayer())
+					net.WriteTable(tobuy)
 				net.SendToServer()
 				
 				surface.PlaySound("buttons/bell1.wav")
