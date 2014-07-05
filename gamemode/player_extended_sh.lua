@@ -29,6 +29,10 @@ function meta:GetClassString()
 	end
 end
 
-function meta:SetupDataTables()
-	self:NetworkVar("Float", 0, "Money") 
+function meta:SetPoints(pts)
+	self:SetDTInt(1,pts)
+end
+
+function meta:GetPoints()
+	return self:GetDTInt(1)
 end
