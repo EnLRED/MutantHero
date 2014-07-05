@@ -35,12 +35,10 @@ function GM:Initialize()
 	SetGlobalString("timetoend", tostring(ROUND_SETTIME))
 	SetGlobalString("timetoendsec", tostring(SECONDS_ROUND_SETTIME))
 	SetGlobalBool("round_started", ROUND_STARTED)
-	
-	net.Receive("pointshop_toserv",pshop_handler) 
 end
 
 function GM:Think()
-
+	net.Receive("pointshop_toserv",pshop_handler) 
 end
 
 function GM:PlayerSpawn(ply) --COMMMMMMMIT
