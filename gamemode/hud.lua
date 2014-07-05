@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 surface.CreateFont("mutanthero_font1", {
 	font = "Arial",
 	size = ScrH() / 20,

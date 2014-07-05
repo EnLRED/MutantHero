@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 local ply = FindMetaTable("Player")
 
 if not ply then return end

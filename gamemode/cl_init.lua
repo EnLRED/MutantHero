@@ -1,3 +1,4 @@
+AddCSLuaFile()
 include("shared.lua")
 
 local hud = { "CHudHealth", "CHudBattery", "CHudSecondaryAmmo", "CHudAmmo", "CHudVoiceStatus", "NetGraph", "CHudCrosshair" }

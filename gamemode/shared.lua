@@ -1,14 +1,14 @@
-///////////MAIN CODER WAS HK47----
-///////////SOME CODING BY MR.MIND----
+
 ///////////Gamemode started make in 08/04/2014----
 
-include("player_info.lua")
+AddCSLuaFile()
 
 if CLIENT then
 	include("hud.lua")
 elseif SERVER then
 
 end
+include("player_info.lua")
 
 GM.Name = "Mutant Hero"
 GM.Author = "HK47"
