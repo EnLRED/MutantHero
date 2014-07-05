@@ -1,0 +1,8 @@
+"mutanthero"
+{
+	"base"		"base"
+	"title"		"Mutant Hero"
+	"maps"		"^gm_"
+	"menusystem"	"1"
+	"workshopid" 	""
+}
