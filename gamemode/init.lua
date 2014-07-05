@@ -54,10 +54,10 @@ function pshop_handler(ln, ply)
 	
 	if Class.Cost <= ply:GetMoney() then
 		if Class.IsAmmo then
-			Player:GiveAmmo(Class.Num, Class.ClassName, True) 
+			ply:GiveAmmo(Class.Num, Class.ClassName, True) 
 			ply:SetMoney(ply:GetMoney()-Class.Cost)
 		else
-			Player:Give(Class.ClassName)
+			ply:Give(Class.ClassName)
 			ply:SetMoney(ply:GetMoney()-Class.Cost)
 		end
 	end
