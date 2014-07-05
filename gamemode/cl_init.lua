@@ -14,6 +14,13 @@ function GM:HUDShouldDraw(name)
 	return true
 end
 
+function GM:Think()
+end
+
+function GM:ContextMenuOpen()
+	return false
+end
+
 function GM:SpawnMenuEnabled()
 	return false
 end
