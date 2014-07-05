@@ -5,7 +5,7 @@ SWEP.PrintName = "Quick Gun"
 SWEP.Slot                  = 1
 SWEP.SlotPos               = 0
  
-SWEP.ViewModel             = "models/weapons/v_smg1.mdl"
+SWEP.ViewModel             = "models/weapons/c_smg1.mdl"
 SWEP.WorldModel            = "models/weapons/w_smg1.mdl"
 
 SWEP.DrawAmmo = true
@@ -27,6 +27,7 @@ SWEP.Base = "weapon_base_muth"
 
 SWEP.HoldType = "smg"
 
+SWEP.Spread = Vector(0.01, 0.01, 0.01)
 SWEP.UseHands              = true
 
 if CLIENT then SWEP.Cost = 45 end

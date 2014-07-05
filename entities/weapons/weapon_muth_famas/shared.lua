@@ -5,7 +5,7 @@ SWEP.PrintName = "Famas"
 SWEP.Slot                  = 3
 SWEP.SlotPos               = 0
 
-SWEP.ViewModelFOV = 45
+SWEP.ViewModelFOV = 60
  
 SWEP.AutoSwitchTo          = false
 SWEP.AutoSwitchFrom        = false
@@ -33,4 +33,6 @@ SWEP.Primary.Damage        = 100
 
 --self.View = Angle(math.Rand(-3, 0), math.Rand(-0.5, 0.5), 0)
 SWEP.Spread = Vector(0.02, 0.02, 0.02)
+
+if CLIENT then SWEP.Cost = 35 end
 

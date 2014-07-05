@@ -71,3 +71,5 @@ function SWEP:PrimaryAttack()
 	self.Owner:LagCompensation(false)
 end
 
+if CLIENT then SWEP.Cost = 55 end
+

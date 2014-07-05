@@ -131,6 +131,8 @@ function SWEP:DrawHUD() end
 
 
 if CLIENT then
+	SWEP.Cost = 60
+
 	SWEP.VElements = {
 		["m1"] = { type = "Model", model = "models/hunter/tubes/tube1x1x1.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0, -0.401, 10), angle = Angle(0, 0, 0), size = Vector(0.039, 0.039, 0.14), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
 		["m2"] = { type = "Model", model = "models/hunter/tubes/circle2x2.mdl", bone = "ValveBiped.Bip01", rel = "m1", pos = Vector(0, 0, 0), angle = Angle(0, 0, 0), size = Vector(0.019, 0.019, 0.019), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
