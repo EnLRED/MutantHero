@@ -30,7 +30,9 @@ function meta:GetClassString()
 end
 
 function meta:SetMoney(mon)
-	self:SetDTInt(1,mon)
+	if SERVER then
+		self:SetDTInt(1,mon)
+	end
 end
 
 function meta:GetMoney()
