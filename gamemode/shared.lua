@@ -16,5 +16,8 @@ GM.Author = "HK47"
 GM.Email = ""
 GM.Website = ""
 
-team.SetUp(1, "Humans", Color(0, 0, 255))
-team.SetUp(2, "Mutants", Color(255, 0, 0))
+TEAM_HUMANS = 1
+TEAM_MUTANTS = 2
+
+team.SetUp(TEAM_HUMANS, "Humans", Color(0, 0, 255))
+team.SetUp(TEAM_MUTANTS, "Mutants", Color(255, 0, 0))
