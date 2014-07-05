@@ -1,4 +1,4 @@
-local l meta = FindMetaTable("Player")
+local meta = FindMetaTable("Player")
 if not meta then return end
 
 meta.Class = 0
