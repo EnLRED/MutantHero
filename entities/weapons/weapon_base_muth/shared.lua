@@ -38,9 +38,6 @@ SWEP.Secondary.Ammo			= "none"
 SWEP.Spread = Vector(0, 0, 0)
 SWEP.View = Angle(0, 0, 0)
 
-SWEP.UseHands = true
-
-
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
 end

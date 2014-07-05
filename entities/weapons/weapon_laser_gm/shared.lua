@@ -29,10 +29,6 @@ SWEP.HoldType = "smg"
 
 SWEP.UseHands              = true
 
---function SWEP:Reload()
-	--self.Weapon:DefaultReload(ACT_VM_RELOAD)
-	--if self:Clip1() <= 0 then self.Weapon:EmitSound(Sound("weapon_smg1.Reload")) end
---end
-
+if CLIENT then SWEP.Cost = 45 end
 
 

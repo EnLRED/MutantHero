@@ -33,3 +33,5 @@ SWEP.Primary.Damage        = 120
 
 --self.View = Angle(math.Rand(-3, 0), math.Rand(-0.5, 0.5), 0)
 SWEP.Spread = Vector(0.06, 0.06, 0.06)
+
+if CLIENT then SWEP.Cost = 50 end

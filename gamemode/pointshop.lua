@@ -5,8 +5,8 @@ local points = 150
 function open_Shop()
 	local weps = weapons.GetList()
 	local ammo = {
-		["pistol"] = { PrintName = "Pistol", Cost = 5, WorldModel = "" },
-		["smg1"] = { PrintName = "SMG1", Cost = 5, WorldModel = LocalPlayer():GetModel() }
+		[1] = { ClassName = "pistol", PrintName = "Pistol", Cost = 5, WorldModel = "models/Items/BoxSRounds.mdl", IsAmmo = true },
+		[2] = { ClassName = "smg1", PrintName = "SMG1", Cost = 5, WorldModel = "models/Items/BoxMRounds.mdl", IsAmmo = true }
 	}
 	local tobuy
 	//local abilities = {}
@@ -49,7 +49,7 @@ function open_Shop()
 	end
 	
 	for k, v in pairs(weps) do
-		if weps_t.Cost then weps_t:AddLine(v.PrintName, 1) end
+		if v.Cost then weps_t:AddLine(v.PrintName, v.Cost) end
 	end
 	
 	local ammo_t = vgui.Create("DListView", win)
@@ -81,6 +81,30 @@ function open_Shop()
 		if tobuy then
 			if points >= tobuy.Cost then
 				points = points - tobuy.Cost
+				
+				local ammo = false
+				if tobuy.IsAmmo then ammo = true end
+				
+				net.Start("pointshop_toserv")
+					net.WriteString(tobuy.ClassName)
+					net.WriteBit(ammo)
+					net.WriteEntity(LocalPlayer())
+				net.SendToServer()
+				
+				surface.PlaySound("buttons/bell1.wav")
+				
+				local lab = vgui.Create("DLabel", win)
+				lab:SetPos(290, 380)
+				lab:SetFont("mutanthero_font1")
+				lab:SetText("-" .. tobuy.Cost .. "$")
+				lab.Think = function()
+					lab:SetAlpha(lab:GetAlpha() - 2)
+					local x, y = lab:GetPos()
+					lab:SetPos(x, y - 0.3)
+					lab:SizeToContents()
+					
+					if lab:GetAlpha() <= 1 then lab:Remove() end
+				end
 			else
 				LocalPlayer():ChatPrint("No points!")
 			end
@@ -109,9 +133,9 @@ function open_Shop()
 	
 	local info = vgui.Create("DModelPanel", win)
 	info:SetPos(280, 70)
-	info:SetModel(LocalPlayer():GetModel())
-	info:SetSize(100, 100)
-	info:SetCamPos(Vector(50, 50, 120))
+	info:SetModel(" ")
+	info:SetSize(150, 150)
+	info:SetCamPos(Vector(20, 20, 0))
 	info:SetLookAt(Vector(0, 0, 0))
 	info.Think = function()
 		if tobuy then
