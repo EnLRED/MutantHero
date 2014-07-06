@@ -29,6 +29,10 @@ end
 
 function GM:RestartRound()
 	self:InitPostEntity()
+	
+	for k, v in pairs(player.GetAll()) do v:SendLua("surface.PlaySound('music/hl2_song3.mp3')") end
+	
+	timer.Simple(1, function() for k, v in pairs(player.GetAll()) do v:Spawn() end end)
 end
 
 function GM:InitPostEntity()
@@ -56,7 +60,13 @@ function GM:Think()
 	net.Receive("pointshop_toserv", pshop_handler) 
 	
 	if ROUND_SETTIME <= 5 and not IS_ROUND_STARTED then
-		for k, v in pairs(player.GetAll()) do v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") end
+		for k, v in pairs(player.GetAll()) do 
+			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
+		end
+		
+		for k, v in pairs(#team.GetPlayers(TEAM_HUMANS) / 4) do
+			
+		end
 		
 		IS_ROUND_STARTED = true
 		SetGlobalBool("round_started", IS_ROUND_STARTED)

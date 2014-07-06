@@ -3,9 +3,6 @@ include("shared.lua")
 
 local hud = { "CHudHealth", "CHudBattery", "CHudSecondaryAmmo", "CHudAmmo", "CHudVoiceStatus", "NetGraph", "CHudCrosshair" }
 
-local Current = 1
-local Current2 = 1
-
 function GM:HUDShouldDraw(name)
 	for k, v in pairs(hud) do
 		if v == name then return false end
