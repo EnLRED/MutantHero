@@ -35,6 +35,10 @@ function GM:RestartRound()
 	timer.Simple(1, function() for k, v in pairs(player.GetAll()) do v:Spawn() end end)
 end
 
+function GM:PlayerNoClip()
+	return false
+end
+
 function GM:InitPostEntity()
 	timer.Create("count_round_end", 1, 0, function()
 		ROUND_TIME_SECS = ROUND_TIME_SECS - 1
@@ -64,9 +68,9 @@ function GM:Think()
 			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
 		end
 		
-		for k, v in pairs(#team.GetPlayers(TEAM_HUMANS) / 4) do
+		//for k, v in pairs(#team.GetPlayers(TEAM_HUMANS) / 4) do
 			
-		end
+		//end
 		
 		IS_ROUND_STARTED = true
 		SetGlobalBool("round_started", IS_ROUND_STARTED)
