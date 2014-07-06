@@ -5,7 +5,7 @@ function open_Shop()
 	local ammo = {
 		[1] = { ClassName = "pistol", PrintName = "Pistol", Cost = 5, WorldModel = "models/Items/BoxSRounds.mdl", IsAmmo = true, Num = 25 },
 		[2] = { ClassName = "smg1", PrintName = "SMG1", Cost = 5, WorldModel = "models/Items/BoxMRounds.mdl", IsAmmo = true, Num = 35 },
-		[3] = { ClassName = "357", PrintName = "357", Cost = 5, WorldModel = "models/Items/BoxMRounds.mdl", IsAmmo = true, Num = 25 },
+		[3] = { ClassName = "357", PrintName = "357", Cost = 5, WorldModel = "models/Items/357ammobox.mdl", IsAmmo = true, Num = 25 },
 		[4] = { ClassName = "ar2", PrintName = "AR2", Cost = 5, WorldModel = "models/Items/BoxMRounds.mdl", IsAmmo = true, Num = 15 }
 	}
 	local tobuy
@@ -163,10 +163,15 @@ function open_Shop()
 	info:SetFont("mutanthero_verysmallf")
 	info:SetText(" ")
 	info.Think = function()
-		if tobuy and not tobuy.IsAmmo then
-			info:SetText("Ammo uses: " .. string.upper(tobuy.Primary.Ammo))
+		if tobuy then
+			if not tobuy.IsAmmo then
+				info:SetText("Ammo uses: " .. string.upper(tobuy.Primary.Ammo))
+			else
+				info:SetText("Amount: " .. tobuy.Num)
+			end
+			
 			info:SizeToContents()
-		else info:SetText(" ") end
+		end
 	end
 	
 	local info = vgui.Create("DLabel", win)

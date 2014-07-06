@@ -187,8 +187,8 @@ function GM:HUDPaint()
 	
 	surface.SetDrawColor(Color(50, 50, 50, 200))
 	
-	local time_minutes = GetGlobalString("timetoend")
-	local time_seconds = GetGlobalString("timetoendsec")
+	local time_minutes = GetGlobalInt("timetoend")
+	local time_seconds = GetGlobalInt("timetoendsec")
 	
 	surface.DrawRect(sh / 25, sw / 2.15, sh / 2.5, sw / 12.5)
 	
@@ -218,7 +218,7 @@ function GM:HUDPaint()
 	
 	//------------------------------------------------------------lal-----------------\\
 	
-	if LocalPlayer():Team() == 2 then ---//mutant's hud
+	if LocalPlayer():Team() == TEAM_MUTANTS then ---//mutant's hud
 		for k, v in pairs(team.GetPlayers(1)) do
 			local pos = (v:GetPos() + Vector(0, 0, 50)):ToScreen()
 		
@@ -228,10 +228,10 @@ function GM:HUDPaint()
 	
 	
 	
-	if LocalPlayer():Team() == 1 then ---///human's helmet settings
+	if LocalPlayer():Team() == TEAM_HUMANS then ---///human's helmet settings
 		if zvision then
 			for k, v in pairs(ents.FindInSphere(LocalPlayer():GetPos(), 1700)) do
-				if v:IsPlayer() and v:Team() == 2 then
+				if v:IsPlayer() and v:Team() == TEAM_MUTANTS then
 					local pos = (v:GetPos() + Vector(0, 0, 80)):ToScreen()
 					
 					draw.DrawText("UNKNOWN OBJECT!", "DefaultFixed", pos.x, pos.y, Color(255, 0, 0), TEXT_ALIGN_CENTER)
@@ -252,14 +252,14 @@ function GM:HUDPaint()
 		surface.DrawTexturedRectRotated(sw / 1, sh / 7, sw / 1.15, sh / 7, -2)
 	
 		if tr.Entity:IsPlayer() then
-			if tr.Entity:Team() == 2 then
+			if tr.Entity:Team() == TEAM_MUTANTS then
 				surface.SetDrawColor(Color(255, 0, 0))
 				
 				drawLines(tr.Entity)
 			
 				surface.DrawTexturedRectRotated(sw / 20, sh / 3.5, sw / 1.15, sh / 7, 2)
 				draw3DText("WARNING! UNKNOWN OBJECT!", (sw / 20) + math.tan(CurTime() * 14) / 2, (sh / 4.2) + math.tan(CurTime() * 20) / 2, 1, 1, -2, "mutanthero_font3")
-			elseif tr.Entity:Team() == 1 then			
+			elseif tr.Entity:Team() == TEAM_HUMANS then			
 				surface.SetDrawColor(Color(0, 255, 0))
 				
 				surface.DrawTexturedRectRotated(sw / 20, sh / 3.5, sw / 1.15, sh / 7, 2)
@@ -273,7 +273,7 @@ function GM:HUDPaint()
 	
 		for k, v in pairs(ents.FindInSphere(LocalPlayer():GetPos(), 900)) do
 			if v:IsPlayer() then
-				if v:Team() == 2 and not LocalPlayer():HelmetBroken() then
+				if v:Team() == TEAM_MUTANTS then
 					draw.SimpleText("", "mutanthero_font1", 5, 5, Color(255, 0, 0, 255), 1, 2)
 					draw3DText("WARNING!!! Unknown objects in short radius!", (sw / 20) + math.tan(CurTime() * 14) / 2, (sh / 7) + math.tan(CurTime() * 20) / 2, 1, 1, -2, "mutanthero_font3")
 					
@@ -283,7 +283,7 @@ function GM:HUDPaint()
 					draw.DrawText("WARNING!!! Unknown objects in short radius!", "mutanthero_smallf", (sw / 2.4) + math.tan(CurTime() * 50) / 10, (sh / 1.3) + math.tan(CurTime() * 50) / 10, Color(0, 0, 0))
 				end
 				
-				if v:Team() == 1 then
+				if v:Team() == TEAM_HUMANS then
 					surface.SetDrawColor(Color(0, 255, 0))
 					drawLines(v)
 				end
@@ -310,12 +310,12 @@ function GM:HUDPaint()
 		end
 	end
 	
-	//if tonumber(time_seconds) >= 10 then
-		--draw.DrawText(time .. ":" .. tonumber(SECONDS_ROUND_SETTIME), "mutanthero_font2", sh / 2.2, sw / 2.12, Color(255, 255, 255, 150))
-		//draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
-		//draw3DText("End in: " .. time_minutes .. ":" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
-	//else
-		//draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
-		//draw3DText("End in: " .. time_minutes .. ":0" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
-	//end
+	if time_seconds >= 10 then
+		draw.DrawText(time_minutes .. ":" .. time_seconds, "mutanthero_font2", sh / 2.2, sw / 2.12, Color(255, 255, 255, 150))
+		draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
+		draw3DText("End in: " .. time_minutes .. ":" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
+	else
+		draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
+		draw3DText("End in: " .. time_minutes .. ":0" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
+	end
 end
