@@ -34,6 +34,10 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end
 		
 		LocalPlayer():ChatPrint("Your class is medic now")
+		LocalPlayer():SetClass(CLASS_HUMANS_MEDIC)
+		net.Start("change_class")
+			net.WriteFloat(CLASS_HUMANS_MEDIC)
+		net.SendToServer()
 		
 		return false
 	end
@@ -56,6 +60,10 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end
 		
 		LocalPlayer():ChatPrint("Your class is engineer now")
+		LocalPlayer():SetClass(CLASS_HUMANS_ENGINEER)
+		net.Start("change_class")
+			net.WriteFloat(CLASS_HUMANS_ENGINEER)
+		net.SendToServer()
 		
 		return false
 	end
@@ -78,6 +86,10 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end
 		
 		LocalPlayer():ChatPrint("Your class is light soldier now")
+		LocalPlayer():SetClass(CLASS_HUMANS_LIGHTS)
+		net.Start("change_class")
+			net.WriteFloat(CLASS_HUMANS_LIGHTS)
+		net.SendToServer()
 		
 		return false
 	end
@@ -100,6 +112,10 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end
 		
 		LocalPlayer():ChatPrint("Your class is heavy now")
+		LocalPlayer():SetClass(CLASS_HUMANS_HEAVYS)
+		net.Start("change_class")
+			net.WriteFloat(CLASS_HUMANS_HEAVYS)
+		net.SendToServer()
 		
 		return false
 	end
@@ -122,6 +138,10 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end
 		
 		LocalPlayer():ChatPrint("Your class is berserk now")
+		LocalPlayer():SetClass(CLASS_HUMANS_BERSERK)
+		net.Start("change_class")
+			net.WriteFloat(CLASS_HUMANS_BERSERK)
+		net.SendToServer()
 		
 		return false
 	end

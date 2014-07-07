@@ -18,6 +18,7 @@ local Models = {
 
 util.AddNetworkString("pointshop_toserv")
 util.AddNetworkString("froms_toclient_check")
+util.AddNetworkString("change_class")
 
 function GM:Initialize()
 	util.PrecacheSound("npc/stalker/stalker_scream1.wav")
@@ -62,13 +63,14 @@ end
 
 function GM:Think()
 	net.Receive("pointshop_toserv", pshop_handler) 
+	net.Receive("change_class", function(ln, ply) ply:SetClass(net.ReadFloat()) ply:Spawn() end)
 	
 	if ROUND_SETTIME <= 5 and not IS_ROUND_STARTED then
 		for k, v in pairs(player.GetAll()) do 
 			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
 		end
 		
-		//for k, v in pairs(#team.GetPlayers(TEAM_HUMANS) / 4) do
+		//for k, v in pairs(team.GetPlayers(TEAM_HUMANS)) do
 			
 		//end
 		
@@ -78,7 +80,15 @@ function GM:Think()
 end
 
 function GM:PlayerSpawn(ply) --COMMMMMMMIT
-	if not IS_ROUND_STARTED and not ply.Class then return end
+	if not IS_ROUND_STARTED and ply.Class == 0 then 
+		spectator_handler(ply)
+		
+		return 
+	end
+	
+	ply:UnSpectate()
+	ply:DrawWorldModel(true)
+	ply:DrawViewModel(true)
 
 	if not IS_ROUND_STARTED then
 		ply:SetTeam(TEAM_HUMANS)
@@ -86,10 +96,13 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		ply:SetTeam(TEAM_MUTANTS)
 	end
 	
-	if ply:Team() == TEAM_HUMANS and not ply.Class then
-		ply:SetTeam(TEAM_SPECTATOR)
-		ply:DrawWorldModel(false)
-		
+	if ply:Team() == TEAM_HUMANS and ply.Class == 0 then
+		spectator_handler(ply)
+	end
+	
+	
+	if ply:Team() == TEAM_SPECTATOR then
+		ply:KillSilent()
 	end
 	
 	if ply:Team() == TEAM_HUMANS then
@@ -97,6 +110,21 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
 		ply:SetupHands()
 	end
+	
+	if ply:Team() == TEAM_MUTANTS then
+		
+	end
+end
+
+function spectator_handler(ply)
+	ply:SetTeam(TEAM_SPECTATOR)
+	ply:DrawWorldModel(false)
+	ply:DrawViewModel(false)
+	ply:StripWeapons()
+	ply:Spectate(OBS_MODE_ROAMING)
+	
+	umsg.Start("open_chngcls_muth", ply)
+    umsg.End()
 end
 
 function pshop_handler(ln, ply)

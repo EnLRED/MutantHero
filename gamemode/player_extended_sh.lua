@@ -3,12 +3,18 @@ if not meta then return end
 
 meta.Class = 0
 
+function meta:SetClass(cls)
+	meta.Class = cls
+end
+
 function meta:GetClassString() 
 	if self:Team() == TEAM_HUMANS then
 		if self.Class == CLASS_HUMANS_MEDIC then
 			return "Medic"
-		elseif self.Class == CLASS_HUMANS_GUNNER then
-			return "Gunner"
+		elseif self.Class == CLASS_HUMANS_LIGHTS then
+			return "Light soldier"
+		elseif self.Class == CLASS_HUMANS_HEAVYS then
+			return "Heavy soldier"
 		elseif self.Class == CLASS_HUMANS_BERSERK then
 			return "Berserk"
 		elseif self.Class == CLASS_HUMANS_ENGINEER then
