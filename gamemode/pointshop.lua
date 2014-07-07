@@ -196,6 +196,5 @@ function open_Shop()
 	end
 end
 
-concommand.Add("open_shop", open_Shop)
 usermessage.Hook("open_shop_muth", open_Shop)
 

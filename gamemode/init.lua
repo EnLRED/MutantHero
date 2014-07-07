@@ -1,20 +1,18 @@
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
-
 AddCSLuaFile("changeclass.lua")
 AddCSLuaFile("hud.lua")
 AddCSLuaFile("pointshop.lua")
+AddCSLuaFile("player_extended_sh.lua")
+AddCSLuaFile("player_extended_cl.lua")
 include("shared.lua")
 
 local old_time_standart = 7
 
-local ROUND_SETTIME = old_time_standart
-local ROUND_TIME_SECS = 60
-
-local IS_ROUND_STARTED = false
-local IS_ROUND_END = false
-
-resource.AddWorkshop("107347296") //sunnyisles
+ROUND_SETTIME = old_time_standart
+ROUND_TIME_SECS = 60
+IS_ROUND_STARTED = false
+IS_ROUND_END = false
 
 local Models = {
 	"models/player/zombie_fast.mdl",
@@ -25,6 +23,13 @@ util.AddNetworkString("pointshop_toserv")
 util.AddNetworkString("froms_toclient_check")
 util.AddNetworkString("change_class")
 
+function GM:ShowSpare1(ply)
+	if IS_ROUND_STARTED or ply:Team() == TEAM_MUTANTS then return end
+	
+	umsg.Start("open_shop_muth", ply)
+    umsg.End()
+end
+
 function GM:Initialize()
 	util.PrecacheSound("npc/stalker/stalker_scream1.wav")
 	util.PrecacheSound("npc/crow/idle3.wav")
@@ -33,12 +38,16 @@ function GM:Initialize()
 	util.PrecacheSound("music/ravenholm_1.mp3")
 end
 
-function GM:RestartRound()
+function GM:RestartRound(whoWin) //1 - humans, 0 - mutants
 	self:InitPostEntity()
 	
-	for k, v in pairs(player.GetAll()) do v:SetClass(0) v:SendLua("surface.PlaySound('music/hl2_song3.mp3')") end
+	local str = "nil"
+	local note = "nil"
 	
-	timer.Simple(1, function() for k, v in pairs(player.GetAll()) do v:Spawn() end end)
+	if whoWin then note = "HUMANS WIN!!!" str = "surface.PlaySound('music/hl2_song3.mp3')" else note = "MUTANTS WIN!!!" str = "surface.PlaySound('music/radio1.mp3')" end
+	for k, v in pairs(player.GetAll()) do v:SetClass(0) v:SendLua(str) v:ChatPrint(note .. " Restarting round...") end
+	
+	timer.Simple(2, function() for k, v in pairs(player.GetAll()) do v:Spawn() end end)
 end
 
 function GM:PlayerNoClip()
@@ -50,13 +59,13 @@ function GM:InitPostEntity()
 		ROUND_TIME_SECS = ROUND_TIME_SECS - 1
 		
 		if ROUND_TIME_SECS <= 0 then ROUND_SETTIME = ROUND_SETTIME - 1 SetGlobalInt("timetoend", ROUND_SETTIME) ROUND_TIME_SECS = 60 end
-		if ROUND_TIME_SECS <= 1 and ROUND_SETTIME <= 0 then self:RestartRound() end
+		if ROUND_TIME_SECS <= 1 and ROUND_SETTIME <= 0 then self:RestartRound(true) end
 		
 		SetGlobalInt("timetoendsec", ROUND_TIME_SECS)
 	end)
 
 	ROUND_SETTIME = old_time_standart
-	ROUND_TIME_SECS = 0
+	ROUND_TIME_SECS = 60
 	IS_ROUND_STARTED = false
 	IS_ROUND_END = false
 	
@@ -66,26 +75,42 @@ function GM:InitPostEntity()
 	SetGlobalBool("round_end", IS_ROUND_END)
 end
 
+function GM:PlayerDeath(victim, inflictor, attacker)
+	if IsValid(attacker) and attacker:IsPlayer() then
+		attacker:AddFrags(1)
+	end
+	
+	timer.Simple(0.3, function()
+		if #team.GetPlayers(TEAM_HUMANS) <= 0 and not IS_ROUND_END then
+			IS_ROUND_END = true
+			self:RestartRound(false)
+		end
+	end)
+	
+	victim:AddDeaths(1)
+end
+
 function GM:Think()
 	net.Receive("pointshop_toserv", pshop_handler) 
 	net.Receive("change_class", function(ln, ply) ply:SetClass(net.ReadFloat()) ply:Spawn() end)
+	
 	--Start round
-	if ROUND_SETTIME <= 5 and not IS_ROUND_STARTED then
+	if ROUND_SETTIME <= 6 and not IS_ROUND_STARTED then
 		for k, v in pairs(player.GetAll()) do 
 			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
 		end
 		
-		if #player.GetAll()>1 then
-			local numofneeded = math.Clamp(math.Random(3),#player.GetAll())
-			for I=1,numofneeded do
-				p = math.Random(#player.GetAll())
+		if #player.GetAll() > 1 then
+			local numofneeded = math.Clamp(math.random(3), #player.GetAll())
+			
+			for I = 1, numofneeded do
+				local p = math.random(#player.GetAll())
+				
 				player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
+				player.GetAll()[p]:Kill()
+				timer.Simple(0.2, function() if not player.GetAll()[p]:Alive() then player.GetAll()[p]:Spawn() end end)
 			end
 		end
-		
-		//for k, v in pairs(team.GetPlayers(TEAM_HUMANS)) do
-			
-		//end
 		
 		IS_ROUND_STARTED = true
 		SetGlobalBool("round_started", IS_ROUND_STARTED)
@@ -102,6 +127,7 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	ply:UnSpectate()
 	ply:DrawWorldModel(true)
 	ply:DrawViewModel(true)
+	ply:ShouldDropWeapon(false)
 
 	if not IS_ROUND_STARTED then
 		ply:SetTeam(TEAM_HUMANS)
@@ -119,13 +145,31 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	end
 	
 	if ply:Team() == TEAM_HUMANS then
+		ply:SetHealth(800)
+		ply:SetMaxHealth(1000)
+		ply:SetArmor(200)
+		ply:SetJumpPower(200)
+	
 		ply:SetMoney(150)
 		ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
 		ply:SetupHands()
 	end
 	
 	if ply:Team() == TEAM_MUTANTS then
-		
+		ply:SetHealth(3500)
+		ply:SetMaxHealth(3500)
+	
+		ply:SetModel(player_manager.TranslatePlayerModel("zombie"))
+		ply:Give("weapon_mutant_gm")
+	end
+end
+
+function GM:EntityTakeDamage(ent, dmginfo)
+	local attacker = dmginfo:GetAttacker()
+	
+	if attacker:IsPlayer() and ent:IsPlayer() and attacker:Team() == ent:Team() then
+		dmginfo:SetDamage(0)
+		dmginfo:ScaleDamage(0)
 	end
 end
 

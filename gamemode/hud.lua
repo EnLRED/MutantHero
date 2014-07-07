@@ -264,10 +264,10 @@ function GM:HUDPaint()
 				
 				surface.DrawTexturedRectRotated(sw / 20, sh / 3.5, sw / 1.15, sh / 7, 2)
 			
-				draw3DText(tr.Entity:Nick(), (sw / 20) + math.tan(CurTime() * 14) / 2, (sh / 4.4) + math.tan(CurTime() * 15) / 2, 1, 1, -2, "mutanthero_font3")
-				draw3DText("Code name: " .. tr.Entity:UniqueID(), (sw / 20) + math.tan(CurTime() * 14) / 2, (sh / 4) + math.tan(CurTime() * 20) / 2, 1, 1, -2, "mutanthero_font3")
-				draw3DText("Costume health scanner: " .. tr.Entity:Health(), (sw / 20) + math.tan(CurTime() * 14) / 2, (sh / 3.6) + math.tan(CurTime() * 15) / 2, 1, 1, -2, "mutanthero_font3")
-				draw3DText("Ally", (sw / 20) + math.tan(CurTime() * 14) / 2, (sh / 3.2) + math.tan(CurTime() * 20) / 2, 1, 1, -2, "mutanthero_font3")
+				draw3DText(tr.Entity:Nick(), (sw / 20) + math.tan(CurTime() * 14) / 2, (sh / 4.4) + math.tan(CurTime() * 5) / 2, 1, 1, -2, "mutanthero_font3")
+				draw3DText("Code name: " .. tr.Entity:UniqueID(), (sw / 20) + math.tan(CurTime() * 14) / 2, (sh / 4) + math.tan(CurTime() * 5) / 2, 1, 1, -2, "mutanthero_font3")
+				draw3DText("Health: " .. tr.Entity:Health(), (sw / 20) + math.tan(CurTime() * 14) / 2, (sh / 3.6) + math.tan(CurTime() * 5) / 2, 1, 1, -2, "mutanthero_font3")
+				draw3DText("Ally", (sw / 20) + math.tan(CurTime() * 14) / 2, (sh / 3.2) + math.tan(CurTime() * 5) / 2, 1, 1, -2, "mutanthero_font3")
 			end
 		end
 	

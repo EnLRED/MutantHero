@@ -154,5 +154,4 @@ function open_ChangeCls()
 	/////////
 end
 
-concommand.Add("open_chngcls", open_ChangeCls)
 usermessage.Hook("open_chngcls_muth", open_ChangeCls)
