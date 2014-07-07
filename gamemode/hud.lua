@@ -311,7 +311,7 @@ function GM:HUDPaint()
 	end
 	
 	if time_seconds >= 10 then
-		draw.DrawText(time_minutes .. ":" .. time_seconds, "mutanthero_font2", sh / 2.2, sw / 2.12, Color(255, 255, 255, 150))
+		//draw.DrawText(time_minutes .. ":" .. time_seconds, "mutanthero_font2", sh / 2.2, sw / 2.12, Color(255, 255, 255, 150))
 		draw.SimpleText("", "mutanthero_font2", 5, 5, Color(255, 255, 255, 255), 1, 2)
 		draw3DText("End in: " .. time_minutes .. ":" .. time_seconds, (sh / 0.8) + math.tan(CurTime()) / 2, (sw / 24) + math.tan(CurTime() * math.random(1, 5)) / 5, 1, 1, 2, "mutanthero_font2")
 	else
