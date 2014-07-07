@@ -19,7 +19,11 @@ function open_ChangeCls()
 	close:SetPos(390, 25)
 	close:SetSize(320, 20)
 	close:SetText("Close (If you pressed your class will be heavy)")
-	close.DoClick = function() if win and IsValid(win) then win:Close() end end
+	close.DoClick = function() 
+		if win and IsValid(win) then win:Close() end 
+		
+		LocalPlayer():ChatPrint("Your class is heavy now")
+	end
 	
 	//medic
 	local info = vgui.Create("SpawnIcon", win)
@@ -27,7 +31,9 @@ function open_ChangeCls()
 	info:SetModel("models/player/alyx.mdl")
 	info:SetSize(100, 100)
 	info.OnMousePressed = function()
+		if win and IsValid(win) then win:Close() end
 		
+		LocalPlayer():ChatPrint("Your class is medic now")
 		
 		return false
 	end
@@ -47,7 +53,9 @@ function open_ChangeCls()
 	info:SetModel("models/player/eli.mdl")
 	info:SetSize(100, 100)
 	info.OnMousePressed = function()
+		if win and IsValid(win) then win:Close() end
 		
+		LocalPlayer():ChatPrint("Your class is engineer now")
 		
 		return false
 	end
@@ -67,7 +75,9 @@ function open_ChangeCls()
 	info:SetModel("models/Humans/Group03/male_02.mdl")
 	info:SetSize(100, 100)
 	info.OnMousePressed = function()
+		if win and IsValid(win) then win:Close() end
 		
+		LocalPlayer():ChatPrint("Your class is light soldier now")
 		
 		return false
 	end
@@ -87,7 +97,9 @@ function open_ChangeCls()
 	info:SetModel("models/Humans/Group03/male_09.mdl")
 	info:SetSize(100, 100)
 	info.OnMousePressed = function()
+		if win and IsValid(win) then win:Close() end
 		
+		LocalPlayer():ChatPrint("Your class is heavy now")
 		
 		return false
 	end
@@ -107,7 +119,9 @@ function open_ChangeCls()
 	info:SetModel("models/odessa.mdl")
 	info:SetSize(100, 100)
 	info.OnMousePressed = function()
+		if win and IsValid(win) then win:Close() end
 		
+		LocalPlayer():ChatPrint("Your class is berserk now")
 		
 		return false
 	end
