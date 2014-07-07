@@ -31,7 +31,7 @@ end
 function GM:RestartRound()
 	self:InitPostEntity()
 	
-	for k, v in pairs(player.GetAll()) do v:SendLua("surface.PlaySound('music/hl2_song3.mp3')") end
+	for k, v in pairs(player.GetAll()) do v:SetClass(0) v:SendLua("surface.PlaySound('music/hl2_song3.mp3')") end
 	
 	timer.Simple(1, function() for k, v in pairs(player.GetAll()) do v:Spawn() end end)
 end
