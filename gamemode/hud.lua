@@ -305,11 +305,12 @@ function GM:HUDPaint()
 		end
 	
 		for k, v in pairs(team.GetPlayers(TEAM_HUMANS)) do
-			if not IsValid(v) or not v:Alive() or not v:LookupBone("ValveBiped.Bip01_Head1") then return end
-			local pos = (v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1")) + Vector(0, 0, 20)):ToScreen()
-			if not pos then return end
-		
-			draw.DrawText(v:Nick(), "ChatFont", pos.x, pos.y, Color(0, 255, 0), TEXT_ALIGN_CENTER)
+			if v != LocalPlayer() and v:LookupBone("ValveBiped.Bip01_Head1") then
+				local pos = (v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1")) + Vector(0, 0, 20)):ToScreen()
+				if pos then
+					draw.DrawText(v:Nick(), "ChatFont", pos.x, pos.y, Color(0, 255, 0), TEXT_ALIGN_CENTER)
+				end
+			end
 		end
 	end
 	
