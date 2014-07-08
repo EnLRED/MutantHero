@@ -42,7 +42,7 @@ function GM:RestartRound(whoWin) //1 - humans, 0 - mutants
 	self:InitPostEntity()
 	
 	local str = "nil"
-	local note = "nil"
+	local note = "Error! Sorry somethings has crashed (no argument?)"
 	
 	if whoWin then note = "HUMANS WIN!!!" str = "surface.PlaySound('music/hl2_song3.mp3')" else note = "MUTANTS WIN!!!" str = "surface.PlaySound('music/radio1.mp3')" end
 	for k, v in pairs(player.GetAll()) do v:SetClass(0) v:SendLua(str) v:ChatPrint(note .. " Restarting round...") end
@@ -55,11 +55,15 @@ function GM:PlayerNoClip()
 end
 
 function GM:InitPostEntity()
+	----Start game | it looks like  main() {} :D
 	timer.Create("count_round_end", 1, 0, function()
 		ROUND_TIME_SECS = ROUND_TIME_SECS - 1
 		
+		--Tick / Time
 		if ROUND_TIME_SECS <= 0 then ROUND_SETTIME = ROUND_SETTIME - 1 SetGlobalInt("timetoend", ROUND_SETTIME) ROUND_TIME_SECS = 60 end
-		if ROUND_TIME_SECS <= 1 and ROUND_SETTIME <= 0 then self:RestartRound(true) end
+		
+		--Humans win
+		if ROUND_TIME_SECS <= 1 and ROUND_SETTIME <= 0 then IS_ROUND_END = true SetGlobalBool("round_end", IS_ROUND_END) self:RestartRound(true) end
 		
 		SetGlobalInt("timetoendsec", ROUND_TIME_SECS)
 	end)
@@ -81,8 +85,10 @@ function GM:PlayerDeath(victim, inflictor, attacker)
 	end
 	
 	timer.Simple(0.3, function()
+		--Mutants win
 		if #team.GetPlayers(TEAM_HUMANS) <= 0 and not IS_ROUND_END then
 			IS_ROUND_END = true
+			SetGlobalBool("round_end", IS_ROUND_END)
 			self:RestartRound(false)
 		end
 	end)
@@ -92,7 +98,7 @@ end
 
 function GM:Think()
 	net.Receive("pointshop_toserv", pshop_handler) 
-	net.Receive("change_class", function(ln, ply) ply:SetClass(net.ReadFloat()) ply:Spawn() end)
+	net.Receive("change_class", function() local ply = net.ReadEntity() local n = net.ReadFloat() ply:SetClass(n) ply:Spawn() end)
 	
 	--Start round
 	if ROUND_SETTIME <= 6 and not IS_ROUND_STARTED then
@@ -100,6 +106,7 @@ function GM:Think()
 			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
 		end
 		
+		--Spawn random mutants
 		if #team.GetPlayers(TEAM_HUMANS) > 1 then
 			local numofneeded = math.Clamp(math.random(3), #team.GetPlayers(TEAM_HUMANS))
 			
@@ -177,6 +184,7 @@ end
 function GM:DoPlayerDeath(ply)
 	ply:CreateRagdoll()
 end
+
 
 function spectator_handler(ply)
 	ply:SetTeam(TEAM_SPECTATOR)

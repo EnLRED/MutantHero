@@ -27,7 +27,7 @@ function open_ChangeCls()
 	
 	//medic
 	local info = vgui.Create("SpawnIcon", win)
-	info:SetPos(50, 50)
+	info:SetPos(50, 50) //ssszs
 	info:SetModel("models/player/alyx.mdl")
 	info:SetSize(100, 100)
 	info.OnMousePressed = function()

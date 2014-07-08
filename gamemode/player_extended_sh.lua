@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 local meta = FindMetaTable("Player")
 if not meta then return end
 
