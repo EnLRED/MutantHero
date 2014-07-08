@@ -99,7 +99,7 @@ end
 
 function GM:Think()
 	net.Receive("pointshop_toserv", pshop_handler) 
-	net.Receive("change_class", function() local ply = net.ReadEntity() local n = net.ReadFloat() ply:SetClass(n) ply:Spawn() end)
+	net.Receive("change_class", function(ln, ply) local n = net.ReadFloat() ply:SetClass(n) ply:Spawn() print(ply:GetClassString()) end)
 	
 	--Start round
 	if ROUND_SETTIME <= 6 and not IS_ROUND_STARTED then
@@ -109,16 +109,14 @@ function GM:Think()
 		
 		--Spawn random mutants
 		if #player.GetAll() > 1 then
-			local numofneeded = math.Clamp(math.random(3), math.ceil(#player.GetAll() / 2))
+			local numofneeded = math.Clamp(math.random(2), math.ceil(#player.GetAll() / 2))
 			
 			for I = 1, numofneeded do
 				local p = math.random(#player.GetAll())
 				
 				if IsValid(player.GetAll()[p]) then
 					player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
-					player.GetAll()[p]:Kill()
-					
-					timer.Simple(0.2, function() if not player.GetAll()[p]:Alive() then player.GetAll()[p]:Spawn() end end)
+					player.GetAll()[p]:Spawn()
 				end
 			end
 		end
@@ -129,12 +127,12 @@ function GM:Think()
 end
 
 function GM:PlayerSpawn(ply) --COMMMMMMMIT
-	if not IS_ROUND_STARTED and ply.Class == 0 then 
+	if not IS_ROUND_STARTED and ply:GetClassString() == "NoCLS" then
 		spectator_handler(ply)
 		
-		return 
+		return
 	end
-	
+
 	ply:UnSpectate()
 	ply:DrawWorldModel(true)
 	ply:DrawViewModel(true)
@@ -148,7 +146,7 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		ply:SetTeam(TEAM_MUTANTS)
 	end
 	
-	if ply:Team() == TEAM_HUMANS and ply.Class == 0 then
+	if ply:Team() == TEAM_HUMANS and ply:GetClassString() == "NoCLS" then
 		spectator_handler(ply)
 	end
 	
@@ -159,14 +157,49 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		ply:SetHealth(800)
 		ply:SetMaxHealth(1000)
 		ply:SetArmor(200)
-		ply:SetJumpPower(200)
+		ply:SetJumpPower(170)
 	
 		ply:SetMoney(150)
-		ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
+		
+		if ply:GetClassString() == "Engineer" then
+			ply:SetModel(player_manager.TranslatePlayerModel("eli"))
+			ply:SetHealth(700)
+		end
+		
+		if ply:GetClassString() == "Medic" then
+			ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
+			ply:Give("weapon_muth_medkit")
+			ply:SetHealth(750)
+		end
+		
+		if ply:GetClassString() == "Berserk" then
+			ply:SetModel(player_manager.TranslatePlayerModel("odessa"))
+			ply:SetWalkSpeed(240)
+			ply:SetHealth(850)
+			ply:SetRunSpeed(240)
+		end
+		
+		if ply:GetClassString() == "Heavy soldier" then
+			ply:SetModel(player_manager.TranslatePlayerModel("male18"))
+			ply:SetWalkSpeed(190)
+			ply:Give("weapon_muth_ak47")
+			ply:SetHealth(1000)
+			ply:SetRunSpeed(190)
+		end
+		
+		if ply:GetClassString() == "Light soldier" then
+			ply:SetModel(player_manager.TranslatePlayerModel("male11"))
+			ply:SetWalkSpeed(240)
+			ply:SetHealth(700)
+			ply:SetRunSpeed(240)
+		end
+		
 		ply:SetupHands()
 	elseif ply:Team() == TEAM_MUTANTS then
-		ply:SetHealth(3500)
-		ply:SetMaxHealth(3500)
+		ply:SetHealth(3200)
+		ply:SetMaxHealth(3200)
+		ply:SetWalkSpeed(275)
+		ply:SetRunSpeed(275)
 	
 		ply:SetModel(player_manager.TranslatePlayerModel("zombie"))
 		ply:Give("weapon_mutant_gm")
@@ -176,9 +209,17 @@ end
 function GM:EntityTakeDamage(ent, dmginfo)
 	local attacker = dmginfo:GetAttacker()
 	
-	if attacker:IsPlayer() and ent:IsPlayer() and attacker:Team() == ent:Team() then
+	if IsValid(attacker) and attacker:IsPlayer() and ent:IsPlayer() and attacker:Team() == ent:Team() then
 		dmginfo:SetDamage(0)
 		dmginfo:ScaleDamage(0)
+	end
+	
+	if IsValid(attacker) and attacker:IsPlayer() then 
+		if attacker:GetClassString() == "Medic" then
+			dmginfo:SetDamage(dmginfo:GetDamage() - 10)
+		elseif attacker:GetClassString() == "Heavy soldier" then
+			dmginfo:SetDamage(dmginfo:GetDamage() * 1.2)
+		end
 	end
 end
 

@@ -199,7 +199,7 @@ function GM:HUDPaint()
 	surface.SetDrawColor(Color(255, 0, 0))
 	
 	surface.DrawOutlinedRect((sh / 18) - 2, (sw / 1.94) - 2, (sw / 6.3) + 6, (sh / 30) + 4)
-	//surface.DrawRect((sh / 18) - 2, (sw / 1.94) - 2, LocalPlayer():Health() / LocalPlayer():GetMaxHealth(), (sh / 30) + 4)
+	surface.DrawRect((sh / 18) + 0.5, (sw / 1.94), (sw / (LocalPlayer():Health() / (LocalPlayer():GetMaxHealth() * 0.128))), sh / 30)
 	
 	surface.SetDrawColor(Color(0, 0, 255))
 	
@@ -305,8 +305,9 @@ function GM:HUDPaint()
 		end
 	
 		for k, v in pairs(team.GetPlayers(TEAM_HUMANS)) do
-			if not IsValid(v) or not v:Alive() then return end
+			if not IsValid(v) or not v:Alive() or not v:LookupBone("ValveBiped.Bip01_Head1") then return end
 			local pos = (v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1")) + Vector(0, 0, 20)):ToScreen()
+			if not pos then return end
 		
 			draw.DrawText(v:Nick(), "ChatFont", pos.x, pos.y, Color(0, 255, 0), TEXT_ALIGN_CENTER)
 		end

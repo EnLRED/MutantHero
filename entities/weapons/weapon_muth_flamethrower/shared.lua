@@ -11,7 +11,7 @@ SWEP.SlotPos               = 0
 
 SWEP.Base                  = "weapon_base"
  
-SWEP.ViewModel             = "models/weapons/v_smg1.mdl"
+SWEP.ViewModel             = "models/weapons/c_smg1.mdl"
 SWEP.WorldModel            = "models/weapons/w_smg1.mdl"
  
 SWEP.Primary.ClipSize      = 1500
@@ -20,6 +20,7 @@ SWEP.Primary.Delay         = 0.1
 SWEP.Primary.Ammo          = "none"
 SWEP.Primary.Automatic     = true
 SWEP.MaxAmmo               = 1500
+SWEP.Primary.Damage = 70
 
 SWEP.UseHands              = true
 
@@ -60,9 +61,7 @@ function SWEP:Initialize()
 end
 
 function SWEP:PrimaryAttack()
-	if self.Owner:WaterLevel() > 0 or not self:CanPrimaryAttack() then return end
-	
-	self:TakePrimaryAmmo(1)
+	if self.Owner:WaterLevel() > 0 then return end
 	
 	if not self.Sound then
 		self.Sound = CreateSound(self.Owner, "thrusters/rocket04.wav")
@@ -80,7 +79,7 @@ function SWEP:PrimaryAttack()
 	
 	if SERVER then
 		if tr.Entity:IsPlayer() and IsValid(tr.Entity) then
-			if tr.Entity:Team() == 2 then tr.Entity:TakeDamage(math.random(50, 80)) tr.Entity:Ignite(math.random(10, 20)) end
+			if tr.Entity:Team() == 2 then tr.Entity:TakeDamage(70) tr.Entity:Ignite(math.random(2, 4)) end
 		end
 		
 		local ef = EffectData()
