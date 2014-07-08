@@ -6,7 +6,3 @@ SWEP.DrawCrosshair = false
 
 function SWEP:Reload()
 end
-
-function SWEP:DrawWeaponSelection()
-	return self:BaseDrawWeaponSelection()
-end

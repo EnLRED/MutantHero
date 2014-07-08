@@ -96,7 +96,7 @@ function open_Shop()
 					if str != "[NULL Entity]" then NO_ACCES = true end
 				end)
 				
-				timer.Simple(0.001, function()
+				timer.Simple(0.01, function()
 					if NO_ACCES then return end
 					
 					surface.PlaySound("buttons/bell1.wav")

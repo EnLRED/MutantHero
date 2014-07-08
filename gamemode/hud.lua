@@ -162,6 +162,7 @@ end
 
 function GM:HUDPaint()
 	if LocalPlayer():Team() == TEAM_SPECTATOR then return end
+	if not LocalPlayer():Alive() then return end
 
 	local sw = surface.ScreenWidth()--ScrW()
 	local sh = surface.ScreenHeight()--ScrH()
