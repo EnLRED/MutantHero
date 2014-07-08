@@ -5,6 +5,7 @@ AddCSLuaFile("hud.lua")
 AddCSLuaFile("pointshop.lua")
 AddCSLuaFile("player_extended_sh.lua")
 AddCSLuaFile("player_extended_cl.lua")
+AddCSLuaFile("postpr.lua")
 include("shared.lua")
 
 local old_time_standart = 7
@@ -108,15 +109,17 @@ function GM:Think()
 		
 		--Spawn random mutants
 		if #player.GetAll() > 1 then
-			local numofneeded = math.Clamp(math.random(3), #player.GetAll())
+			local numofneeded = math.Clamp(math.random(3), math.ceil(#player.GetAll() / 2))
 			
 			for I = 1, numofneeded do
 				local p = math.random(#player.GetAll())
 				
-				player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
-				player.GetAll()[p]:Kill()
-				
-				timer.Simple(0.2, function() if not player.GetAll()[p]:Alive() then player.GetAll()[p]:Spawn() end end)
+				if IsValid(player.GetAll()[p]) then
+					player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
+					player.GetAll()[p]:Kill()
+					
+					timer.Simple(0.2, function() if not player.GetAll()[p]:Alive() then player.GetAll()[p]:Spawn() end end)
+				end
 			end
 		end
 		
@@ -136,7 +139,9 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	ply:DrawWorldModel(true)
 	ply:DrawViewModel(true)
 	ply:ShouldDropWeapon(false)
-
+	ply:StripWeapons()
+	ply:RemoveAllAmmo()
+	
 	if not IS_ROUND_STARTED then
 		ply:SetTeam(TEAM_HUMANS)
 	else
@@ -150,9 +155,7 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	
 	if ply:Team() == TEAM_SPECTATOR then
 		ply:KillSilent()
-	end
-	
-	if ply:Team() == TEAM_HUMANS then
+	elseif ply:Team() == TEAM_HUMANS then
 		ply:SetHealth(800)
 		ply:SetMaxHealth(1000)
 		ply:SetArmor(200)
@@ -161,9 +164,7 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		ply:SetMoney(150)
 		ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
 		ply:SetupHands()
-	end
-	
-	if ply:Team() == TEAM_MUTANTS then
+	elseif ply:Team() == TEAM_MUTANTS then
 		ply:SetHealth(3500)
 		ply:SetMaxHealth(3500)
 	
@@ -187,6 +188,14 @@ end
 
 
 function spectator_handler(ply)
+	if ply:IsBot() then
+		ply:SetClass(CLASS_HUMANS_LIGHTS)
+		
+		ply:Spawn()
+		
+		return
+	end
+
 	ply:SetTeam(TEAM_SPECTATOR)
 	ply:DrawWorldModel(false)
 	ply:DrawViewModel(false)

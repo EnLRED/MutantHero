@@ -7,6 +7,7 @@ if CLIENT then
 	include("hud.lua")
 	include("pointshop.lua")
 	include("changeclass.lua")
+	include("postpr.lua")
 	include("player_extended_cl.lua")
 elseif SERVER then
 	include("player_extended_sv.lua")

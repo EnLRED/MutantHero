@@ -15,6 +15,17 @@ function open_ChangeCls()
 	end
 	win:MakePopup()
 	
+	timer.Simple(20, function()
+		if win and IsValid(win) then win:Close() else return end
+	
+		LocalPlayer():ChatPrint("Your class is heavy now")
+		LocalPlayer():SetClass(CLASS_HUMANS_HEAVYS)
+		net.Start("change_class")
+			net.WriteEntity(LocalPlayer())
+			net.WriteFloat(CLASS_HUMANS_HEAVYS)
+		net.SendToServer()
+	end)
+	
 	local close = vgui.Create("DButton", win)
 	close:SetPos(390, 25)
 	close:SetSize(320, 20)
@@ -23,6 +34,11 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end 
 		
 		LocalPlayer():ChatPrint("Your class is heavy now")
+		LocalPlayer():SetClass(CLASS_HUMANS_HEAVYS)
+		net.Start("change_class")
+			net.WriteEntity(LocalPlayer())
+			net.WriteFloat(CLASS_HUMANS_HEAVYS)
+		net.SendToServer()
 	end
 	
 	//medic

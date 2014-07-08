@@ -304,7 +304,8 @@ function GM:HUDPaint()
 			surface.DrawTexturedRect(sw / 1.3, sh / 5, sh / 3, sw / 4)
 		end
 	
-		for k, v in pairs(team.GetPlayers(1)) do
+		for k, v in pairs(team.GetPlayers(TEAM_HUMANS)) do
+			if not IsValid(v) or not v:Alive() then return end
 			local pos = (v:GetBonePosition(v:LookupBone("ValveBiped.Bip01_Head1")) + Vector(0, 0, 20)):ToScreen()
 		
 			draw.DrawText(v:Nick(), "ChatFont", pos.x, pos.y, Color(0, 255, 0), TEXT_ALIGN_CENTER)

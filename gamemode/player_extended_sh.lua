@@ -6,7 +6,7 @@ if not meta then return end
 meta.Class = 0
 
 function meta:SetClass(cls)
-	meta.Class = cls
+	self.Class = cls
 end
 
 function meta:GetClassString() 
