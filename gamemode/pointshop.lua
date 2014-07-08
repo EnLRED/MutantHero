@@ -23,6 +23,9 @@ function open_Shop()
 		draw.RoundedBox(0, 0, 0, w, t, Color(0, 0, 0, 170))
 		draw.RoundedBox(0, 10, 10, w - 20, t - 20, Color(100, 100, 100, 200))
 	end
+	win.Think = function()
+		if GetGlobalBool("round_started") and win and IsValid(win) then win:Close() end
+	end
 	win:MakePopup()
 	
 	local close = vgui.Create("DButton", win)
@@ -84,8 +87,15 @@ function open_Shop()
 	buy.DoClick = function()
 		if tobuy then
 			if LocalPlayer():GetMoney() >= tobuy.Cost then
+				local amm = false
+				local num = 0
+				if tobuy.IsAmmo then amm = true num = tobuy.Num end
+			
 				net.Start("pointshop_toserv")
-					net.WriteTable(tobuy)
+					net.WriteFloat(tobuy.Cost)
+					net.WriteBit(amm)
+					net.WriteString(tobuy.ClassName)
+					net.WriteFloat(num)
 				net.SendToServer()
 				
 				local NO_ACCES = false

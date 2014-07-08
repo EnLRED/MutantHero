@@ -109,7 +109,7 @@ function GM:Think()
 		
 		--Spawn random mutants
 		if #player.GetAll() > 1 then
-			local numofneeded = math.Clamp(math.random(2), math.ceil(#player.GetAll() / 2))
+			local numofneeded = math.Clamp(math.random(2), math.random(1, #player.GetAll()))
 			
 			for I = 1, numofneeded do
 				local p = math.random(#player.GetAll())
@@ -163,7 +163,9 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		
 		if ply:GetClassString() == "Engineer" then
 			ply:SetModel(player_manager.TranslatePlayerModel("eli"))
+			ply:SetWalkSpeed(230)
 			ply:SetHealth(700)
+			ply:SetRunSpeed(230)
 		end
 		
 		if ply:GetClassString() == "Medic" then
@@ -198,8 +200,8 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	elseif ply:Team() == TEAM_MUTANTS then
 		ply:SetHealth(3200)
 		ply:SetMaxHealth(3200)
-		ply:SetWalkSpeed(275)
-		ply:SetRunSpeed(275)
+		ply:SetWalkSpeed(250)
+		ply:SetRunSpeed(250)
 	
 		ply:SetModel(player_manager.TranslatePlayerModel("zombie"))
 		ply:Give("weapon_mutant_gm")
@@ -248,21 +250,25 @@ function spectator_handler(ply)
 end
 
 function pshop_handler(ln, ply)
-	local Class = net.ReadTable()
+	local Cost = net.ReadFloat()
+	local IsAmmo = net.ReadBit()
+	local ClassName = net.ReadString()
+	local Num = net.ReadFloat()
 	
-	if Class.Cost <= ply:GetMoney() then
-		if Class.IsAmmo then
-			ply:GiveAmmo(Class.Num, Class.ClassName, true) 
-			ply:SetMoney(ply:GetMoney() - Class.Cost)
+	if Cost <= ply:GetMoney() then
+		if IsAmmo == 1 then
+			ply:GiveAmmo(Num, ClassName, true) 
 		else
 			net.Start("froms_toclient_check")
-				net.WriteString(tostring(ply:GetWeapon(Class.ClassName)))
+				net.WriteString(tostring(ply:GetWeapon(ClassName)))
 			net.Send(ply)
 			
-			if tostring(ply:GetWeapon(Class.ClassName)) != "[NULL Entity]" then ply:ChatPrint("You already have this weapon!") return end
-			ply:Give(Class.ClassName)
-			ply:SetMoney(ply:GetMoney() - Class.Cost)
+			if tostring(ply:GetWeapon(ClassName)) != "[NULL Entity]" then ply:ChatPrint("You already have this weapon!") return end
+			ply:Give(ClassName)
+			print(ClassName)
 		end
+		
+		ply:SetMoney(ply:GetMoney() - Cost)
 	end
 end
 

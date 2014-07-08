@@ -1,4 +1,4 @@
-AddCSLuaFile('flamethrower_muth_fire.lua')
+
 AddCSLuaFile()
  
 SWEP.Weight                = 7
@@ -24,9 +24,10 @@ SWEP.Primary.Damage = 70
 
 SWEP.UseHands              = true
 
+SWEP.HoldType = "smg"
 
 function SWEP:Initialize()
-	self:SetWeaponHoldType("smg")
+	self:SetWeaponHoldType(self.HoldType)
 	
 	if CLIENT then
 	
@@ -93,9 +94,6 @@ function SWEP:PrimaryAttack()
 	self:SetNextPrimaryFire(CurTime() + 0.06)
 end
 
-function SWEP:SecondaryAttack()
-end
-
 function SWEP:Think()
 	if self.Owner:KeyReleased(IN_ATTACK) or not self.Owner:KeyDown(IN_ATTACK) then
 		if self.Sound then
@@ -119,14 +117,7 @@ function SWEP:OnRemove()
 	if self.Sound then self.Sound:ChangeVolume(0, 0.1) end
 end
 
-function SWEP:DrawHUD() end
-
 ---model---
-
-
-
-
-
 
 
 if CLIENT then
@@ -562,7 +553,6 @@ if CLIENT then
 		return res
 		
 	end
-	
 end
 
 

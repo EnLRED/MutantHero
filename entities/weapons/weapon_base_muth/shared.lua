@@ -38,6 +38,8 @@ SWEP.Secondary.Ammo			= "none"
 SWEP.Spread = Vector(0, 0, 0)
 SWEP.View = Angle(0, 0, 0)
 
+SWEP.UseHands = true
+
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
 end
@@ -72,7 +74,8 @@ function SWEP:PrimaryAttack()
 	self.Owner:LagCompensation(false)
 end
 
-
+function SWEP:Think()
+end
 
 function SWEP:SecondaryAttack()
 end
@@ -89,6 +92,9 @@ function SWEP:OnRemove()
 	self:Holster()
 end
 
+if CLIENT then
+	//SWEP.Cost = 60
+end
 
 
 
