@@ -100,15 +100,16 @@ function GM:Think()
 			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
 		end
 		
-		if #player.GetAll() > 1 then
-			local numofneeded = math.Clamp(math.random(3), #player.GetAll())
+		if #team.GetPlayers(TEAM_HUMANS) > 1 then
+			local numofneeded = math.Clamp(math.random(3), #team.GetPlayers(TEAM_HUMANS))
 			
 			for I = 1, numofneeded do
-				local p = math.random(#player.GetAll())
+				local p = math.random(#team.GetPlayers(TEAM_HUMANS))
 				
-				player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
-				player.GetAll()[p]:Kill()
-				timer.Simple(0.2, function() if not player.GetAll()[p]:Alive() then player.GetAll()[p]:Spawn() end end)
+				team.GetPlayers(TEAM_HUMANS)[p]:SetTeam(TEAM_MUTANTS)
+				team.GetPlayers(TEAM_HUMANS)[p]:Kill()
+				
+				timer.Simple(0.2, function() if not team.GetPlayers(TEAM_HUMANS)[p]:Alive() then team.GetPlayers(TEAM_HUMANS)[p]:Spawn() end end)
 			end
 		end
 		
