@@ -69,10 +69,18 @@ end
 function GM:Think()
 	net.Receive("pointshop_toserv", pshop_handler) 
 	net.Receive("change_class", function(ln, ply) ply:SetClass(net.ReadFloat()) ply:Spawn() end)
-	
+	--Start round
 	if ROUND_SETTIME <= 5 and not IS_ROUND_STARTED then
 		for k, v in pairs(player.GetAll()) do 
 			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
+		end
+		
+		if #player.GetAll()>1 then
+			local numofneeded = math.Clamp(math.Random(3),#player.GetAll())
+			for I=1,numofneeded do
+				p = math.Random(#player.GetAll())
+				player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
+			end
 		end
 		
 		//for k, v in pairs(team.GetPlayers(TEAM_HUMANS)) do
@@ -119,6 +127,10 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	if ply:Team() == TEAM_MUTANTS then
 		
 	end
+end
+
+function GM:DoPlayerDeath(ply)
+	ply:CreateRagdoll()
 end
 
 function spectator_handler(ply)
