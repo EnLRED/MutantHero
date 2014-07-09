@@ -20,6 +20,7 @@ GM.Website = ""
 
 TEAM_HUMANS = 1
 TEAM_MUTANTS = 2
+TEAM_SPECTATOR = 3
 
 CLASS_HUMANS_MEDIC = 1
 CLASS_HUMANS_GUNNER = 2
@@ -34,3 +35,4 @@ CLASS_MUTANTS_NORMAL = 5
 
 team.SetUp(TEAM_HUMANS, "Humans", Color(0, 0, 255))
 team.SetUp(TEAM_MUTANTS, "Mutants", Color(255, 0, 0))
+team.SetUp(TEAM_MUTANTS, "Spectator", Color(255, 255, 255))

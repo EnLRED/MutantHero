@@ -1,4 +1,4 @@
-AddCSLuaFile()
+AddCSLuaFile("")
 include("shared.lua")
 
 local old_time_standart = 7
@@ -78,12 +78,20 @@ function GM:Think()
 end
 
 function GM:PlayerSpawn(ply) --COMMMMMMMIT
+	if not IS_ROUND_STARTED and not ply.Class then return end
+
 	if not IS_ROUND_STARTED then
 		ply:SetTeam(TEAM_HUMANS)
 	else
 		ply:SetTeam(TEAM_MUTANTS)
 	end
-
+	
+	if ply:Team() == TEAM_HUMANS and not ply.Class then
+		ply:SetTeam(TEAM_SPECTATOR)
+		ply:DrawWorldModel(false)
+		
+	end
+	
 	if ply:Team() == TEAM_HUMANS then
 		ply:SetMoney(150)
 		ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
