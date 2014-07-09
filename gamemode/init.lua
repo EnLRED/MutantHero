@@ -1,4 +1,9 @@
-AddCSLuaFile("")
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("shared.lua")
+
+AddCSLuaFile("changeclass.lua")
+AddCSLuaFile("hud.lua")
+AddCSLuaFile("pointshop.lua")
 include("shared.lua")
 
 local old_time_standart = 7
