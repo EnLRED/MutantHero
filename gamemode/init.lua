@@ -75,11 +75,13 @@ function GM:Think()
 			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
 		end
 		
-		if #player.GetAll()>1 then
-			local numofneeded = math.Clamp(math.Random(3),#player.GetAll())
+		if #team.GetPlayers(TEAM_HUMANS)>1 then
+			local numofneeded = math.Clamp(math.Random(3),#team.GetPlayers(TEAM_HUMANS))
 			for I=1,numofneeded do
-				p = math.Random(#player.GetAll())
-				player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
+				p = math.Random(#team.GetPlayers(TEAM_HUMANS))
+				ply = team.GetPlayers(TEAM_HUMANS)[p]
+				ply:SetTeam(TEAM_MUTANTS)
+				ply:Kill()
 			end
 		end
 		
