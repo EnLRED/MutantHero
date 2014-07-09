@@ -22,7 +22,7 @@ function meta:GetClassString()
 		elseif self:GetDTInt(2) == CLASS_HUMANS_BERSERK then
 			return "Berserk"
 		elseif self:GetDTInt(2) == CLASS_HUMANS_ENGINEER then
-			return "Egineer"
+			return "Engineer"
 		else
 			return "NoCLS"
 		end

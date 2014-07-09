@@ -42,6 +42,10 @@ end
 function GM:RestartRound(whoWin) //1 - humans, 0 - mutants
 	self:InitPostEntity()
 	
+	for k, v in pairs(ents.GetAll()) do
+		if v:GetNWBool("made_by_people_muth") then v:Remove() end
+	end
+	
 	local str = "nil"
 	local note = "Error! Sorry somethings has crashed (no argument?)"
 	
@@ -150,7 +154,6 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		spectator_handler(ply)
 	end
 	
-	
 	if ply:Team() == TEAM_SPECTATOR then
 		ply:KillSilent()
 	elseif ply:Team() == TEAM_HUMANS then
@@ -166,6 +169,8 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 			ply:SetWalkSpeed(230)
 			ply:SetHealth(700)
 			ply:SetRunSpeed(230)
+			ply:Give("weapon_muth_turret")
+			ply:Give("weapon_muth_beacon")
 		end
 		
 		if ply:GetClassString() == "Medic" then
@@ -231,7 +236,7 @@ end
 
 
 function spectator_handler(ply)
-	if ply:IsBot() then
+	if ply:IsBot() then //go away bots
 		ply:SetClass(CLASS_HUMANS_LIGHTS)
 		
 		ply:Spawn()
@@ -250,6 +255,7 @@ function spectator_handler(ply)
 end
 
 function pshop_handler(ln, ply)
+	//no table!!1!!!1! aahahaha
 	local Cost = net.ReadFloat()
 	local IsAmmo = net.ReadBit()
 	local ClassName = net.ReadString()

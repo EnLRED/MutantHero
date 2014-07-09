@@ -24,7 +24,7 @@ SWEP.HoldType = "smg"
 SWEP.UseHands              = true
 
 SWEP.Primary.ClipSize      = 30
-SWEP.Primary.DefaultClip   = 400
+SWEP.Primary.DefaultClip   = 200
 SWEP.Primary.Delay         = 0.08
 SWEP.Primary.Ammo          = "smg1"
 SWEP.Primary.Automatic     = true

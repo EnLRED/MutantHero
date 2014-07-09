@@ -13,6 +13,8 @@ SWEP.ShowWorldModel = false
 SWEP.DrawAmmo = false
 
 if CLIENT then
+	SWEP.Cost = 25
+
 	SWEP.VElements = {
 		["m"] = { type = "Model", model = "models/props_junk/meathook001a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(10, 0, -1.2), angle = Angle(0, 90, 0), size = Vector(1.5, 1.5, 1.5), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
 	}

@@ -12,11 +12,13 @@ SWEP.DrawAmmo = true
 
 SWEP.Base = "weapon_base"
  
-SWEP.Primary.ClipSize      = 50
-SWEP.Primary.DefaultClip   = 100
+SWEP.Primary.ClipSize      = 15
+SWEP.Primary.DefaultClip   = 80
 SWEP.Primary.Delay         = 0.3
 SWEP.Primary.Ammo          = "pistol"
 SWEP.Primary.Automatic     = false
+
+if CLIENT then SWEP.Cost = 35 end
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType("pistol")
@@ -65,7 +67,7 @@ function SWEP:PrimaryAttack()
 		bullet.Damage = 0
 	else
 		bullet.Force = 15
-		bullet.Damage = math.random(50, 110)
+		bullet.Damage = 70
 	end
 	
 	self.Weapon:EmitSound(Sound("weapon_357.Single"))

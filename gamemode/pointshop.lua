@@ -6,7 +6,8 @@ function open_Shop()
 		[1] = { ClassName = "pistol", PrintName = "Pistol", Cost = 5, WorldModel = "models/Items/BoxSRounds.mdl", IsAmmo = true, Num = 25 },
 		[2] = { ClassName = "smg1", PrintName = "SMG1", Cost = 5, WorldModel = "models/Items/BoxMRounds.mdl", IsAmmo = true, Num = 35 },
 		[3] = { ClassName = "357", PrintName = "357", Cost = 5, WorldModel = "models/Items/357ammobox.mdl", IsAmmo = true, Num = 25 },
-		[4] = { ClassName = "ar2", PrintName = "AR2", Cost = 5, WorldModel = "models/Items/BoxMRounds.mdl", IsAmmo = true, Num = 15 }
+		[4] = { ClassName = "ar2", PrintName = "AR2", Cost = 5, WorldModel = "models/Items/BoxMRounds.mdl", IsAmmo = true, Num = 15 },
+		[5] = { ClassName = "buckshot", PrintName = "Shotgun", Cost = 5, WorldModel = "models/Items/BoxBuckshot.mdl", IsAmmo = true, Num = 5 }
 	}
 	local tobuy
 	//local abilities = {}

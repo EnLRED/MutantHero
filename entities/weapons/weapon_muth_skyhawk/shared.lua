@@ -22,7 +22,7 @@ SWEP.HoldType = "crossbow"
 SWEP.UseHands = true
 
 SWEP.Primary.ClipSize      = 10
-SWEP.Primary.DefaultClip   = 20
+SWEP.Primary.DefaultClip   = 30
 SWEP.Primary.Delay         = 0.6
 SWEP.Primary.Ammo          = "ar2"
 SWEP.Primary.Automatic     = true
