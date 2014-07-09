@@ -242,6 +242,14 @@ function GM:HUDPaint()
 				end
 			end
 		end
+		
+		for k, v in pairs(ents.FindInSphere(LocalPlayer():GetPos(), 3000)) do
+			if v:GetNWBool("isBeacon") then
+				local pos = v:GetPos():ToScreen()
+				
+				surface.DrawCircle(pos.x, pos.y, sh / math.abs(math.sin(CurTime()) * 70), Color(0, 255, 0))
+			end
+		end
 	
 		surface.SetDrawColor(Color(0, 255, 0))
 		surface.DrawRect((sh / 3.5) - 3, sw / 1.94, (sh / 18) + 1, sw / 52)
