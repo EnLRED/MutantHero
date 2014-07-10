@@ -25,7 +25,7 @@ util.AddNetworkString("froms_toclient_check")
 util.AddNetworkString("change_class")
 
 function GM:ShowSpare1(ply)
-	if IS_ROUND_STARTED or ply:Team() == TEAM_MUTANTS then return end
+	if IS_ROUND_STARTED or ply:Team() == TEAM_MUTANTS then ply:ChatPrint("You can't use pointshop because round is started!") return end
 	
 	umsg.Start("open_shop_muth", ply)
     umsg.End()
@@ -40,11 +40,11 @@ function GM:Initialize()
 end
 
 function GM:RestartRound(whoWin) //1 - humans, 0 - mutants
-	self:InitPostEntity()
-	
 	for k, v in pairs(ents.GetAll()) do
 		if v:GetNWBool("made_by_people_muth") then v:Remove() end
 	end
+
+	self:InitPostEntity()
 	
 	local str = "nil"
 	local note = "Error! Sorry somethings has crashed (no argument?)"
@@ -60,6 +60,7 @@ function GM:PlayerNoClip()
 end
 
 function GM:InitPostEntity()
+	print("Round starts...\n\n\n")
 	----Start game | it looks like  main() {} :D
 	timer.Create("count_round_end", 1, 0, function()
 		ROUND_TIME_SECS = ROUND_TIME_SECS - 1
@@ -82,6 +83,8 @@ function GM:InitPostEntity()
 	SetGlobalInt("timetoendsec", ROUND_TIME_SECS)
 	SetGlobalBool("round_started", IS_ROUND_STARTED)
 	SetGlobalBool("round_end", IS_ROUND_END)
+	
+	print("Done!")
 end
 
 function GM:PlayerDeath(victim, inflictor, attacker)
@@ -89,7 +92,7 @@ function GM:PlayerDeath(victim, inflictor, attacker)
 		attacker:AddFrags(1)
 	end
 	
-	timer.Simple(0.3, function()
+	timer.Simple(1, function()
 		--Mutants win
 		if #team.GetPlayers(TEAM_HUMANS) <= 0 and not IS_ROUND_END then
 			IS_ROUND_END = true
@@ -102,8 +105,20 @@ function GM:PlayerDeath(victim, inflictor, attacker)
 end
 
 function GM:Think()
+	for k, v in pairs(player.GetAll()) do
+		-- Rotate left
+		if v:KeyDown(IN_MOVELEFT) and v:IsOnGround() then
+			v:ViewPunch(Angle(0, 0, -0.1))
+		end
+		
+		-- Rotate right
+		if v:KeyDown(IN_MOVERIGHT) and v:IsOnGround() then
+			v:ViewPunch(Angle(0, 0, 0.1))
+		end
+	end
+
 	net.Receive("pointshop_toserv", pshop_handler) 
-	net.Receive("change_class", function(ln, ply) local n = net.ReadFloat() ply:SetClass(n) ply:Spawn() print(ply:GetClassString()) end)
+	net.Receive("change_class", function(ln, ply) local n = net.ReadFloat() ply:SetClass(n) ply:Spawn() end)
 	
 	--Start round
 	if ROUND_SETTIME <= 6 and not IS_ROUND_STARTED then
@@ -113,14 +128,14 @@ function GM:Think()
 		
 		--Spawn random mutants
 		if #player.GetAll() > 1 then
-			local numofneeded = math.Clamp(math.random(2), math.random(1, #player.GetAll()))
+			local numofneeded = math.Clamp(math.random(2), #player.GetAll())
 			
 			for I = 1, numofneeded do
 				local p = math.random(#player.GetAll())
 				
 				if IsValid(player.GetAll()[p]) then
 					player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
-					player.GetAll()[p]:Spawn()
+					timer.Simple(0.1, function() player.GetAll()[p]:Spawn() end)
 				end
 			end
 		end
@@ -157,6 +172,7 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	if ply:Team() == TEAM_SPECTATOR then
 		ply:KillSilent()
 	elseif ply:Team() == TEAM_HUMANS then
+		ply:SetNWVector("muth_startpoint", ply:GetPos())
 		ply:SetHealth(800)
 		ply:SetMaxHealth(1000)
 		ply:SetArmor(200)
@@ -184,6 +200,7 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 			ply:SetWalkSpeed(240)
 			ply:SetHealth(850)
 			ply:SetRunSpeed(240)
+			ply:Give("weapon_hook_muth")
 		end
 		
 		if ply:GetClassString() == "Heavy soldier" then
@@ -198,6 +215,7 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 			ply:SetModel(player_manager.TranslatePlayerModel("male11"))
 			ply:SetWalkSpeed(240)
 			ply:SetHealth(700)
+			ply:Give("weapon_muth_mp5")
 			ply:SetRunSpeed(240)
 		end
 		
@@ -208,7 +226,7 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		ply:SetWalkSpeed(250)
 		ply:SetRunSpeed(250)
 	
-		ply:SetModel(player_manager.TranslatePlayerModel("zombie"))
+		ply:SetModel(player_manager.TranslatePlayerModel("charple"))
 		ply:Give("weapon_mutant_gm")
 	end
 end
@@ -225,7 +243,9 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		if attacker:GetClassString() == "Medic" then
 			dmginfo:SetDamage(dmginfo:GetDamage() - 10)
 		elseif attacker:GetClassString() == "Heavy soldier" then
-			dmginfo:SetDamage(dmginfo:GetDamage() * 1.2)
+			dmginfo:SetDamage(dmginfo:GetDamage() * 1.25)
+		elseif attacker:GetClassString() == "Berserk" and attacker:GetActiveWeapon().IsMelee then
+			dmginfo:SetDamage(dmginfo:GetDamage() * 1.35)
 		end
 	end
 end

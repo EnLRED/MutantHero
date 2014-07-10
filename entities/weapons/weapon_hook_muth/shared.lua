@@ -3,7 +3,7 @@ AddCSLuaFile()
 SWEP.PrintName			= "Hook"			
 SWEP.Author				= "HK47"
 SWEP.Slot				= 1
-SWEP.SlotPos			= 1
+SWEP.SlotPos			= 0
 
 SWEP.HoldType			= "grenade"
 SWEP.Base				= "wep_muth_melee_base"

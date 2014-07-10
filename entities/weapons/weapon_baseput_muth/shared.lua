@@ -53,9 +53,9 @@ function SWEP:PrimaryAttack()
 		ent:SetAngles(ang)
 		ent:Spawn()
 		
-		ent:SetNWBool("made_by_people_muth", true)
-		
 		self:EntitySetUp(ent)
+		
+		ent:SetNWBool("made_by_people_muth", true)
 		
 		self.Owner:StripWeapon(self.ClassName)
 	else

@@ -199,7 +199,7 @@ function GM:HUDPaint()
 	surface.SetDrawColor(Color(255, 0, 0))
 	
 	surface.DrawOutlinedRect((sh / 18) - 2, (sw / 1.94) - 2, (sw / 6.3) + 6, (sh / 30) + 4)
-	surface.DrawRect((sh / 18) + 0.5, (sw / 1.94), (sw / (LocalPlayer():Health() / (LocalPlayer():GetMaxHealth() * 0.128))), sh / 30)
+	surface.DrawRect((sh / 18) + 0.5, (sw / 1.94), sw / (LocalPlayer():Health()), sh / 30)
 	
 	surface.SetDrawColor(Color(0, 0, 255))
 	

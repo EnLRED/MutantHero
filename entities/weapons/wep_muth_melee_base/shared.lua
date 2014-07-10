@@ -38,6 +38,7 @@ SWEP.SlashSound = ""
 SWEP.HitSound = ""
 SWEP.MissSound = ""
 SWEP.Dmg = 10
+SWEP.IsMelee = true
 
 SWEP.ViewModelBoneMods = {}
 

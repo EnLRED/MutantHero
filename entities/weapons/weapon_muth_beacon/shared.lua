@@ -21,6 +21,8 @@ SWEP.HoldType = "slam"
 
 SWEP.Ent = "prop_physics"
 
+SWEP.Primary.Ammo = "NONE"
+
 function SWEP:PreSetUp(ent)
 	ent:SetModel("models/props_combine/combine_mine01.mdl")
 end
