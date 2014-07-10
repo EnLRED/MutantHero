@@ -36,8 +36,8 @@ function SWEP:PrimaryAttack()
 	if !self:CanPrimaryAttack() then return end
 	if self.Owner:GetActiveWeapon() != self then return end
 	
-	timer.Stop("reload_" .. self:EntIndex())
-	timer.Stop("idle_" .. self:EntIndex())
+	timer.Destroy("reload_" .. self:EntIndex())
+	timer.Destroy("idle_" .. self:EntIndex())
 	
 	self.Owner:LagCompensation(true)
 	
@@ -73,17 +73,21 @@ function SWEP:Reload()
 
 	local num = math.min(6 - self:Clip1(), self:Ammo1())
 	
-	timer.Create("reload_" .. self:EntIndex(), 0.4, num, function()
-		self.Weapon:SendWeaponAnim(ACT_VM_RELOAD)
-		self.Owner:SetAnimation(PLAYER_RELOAD)
-		
-		self:SetClip1(self:Clip1() + 1)
-		self.Owner:RemoveAmmo(1, "buckshot")
-	end)
+	if not timer.Exists("reload_" .. self:EntIndex()) then
+		timer.Create("reload_" .. self:EntIndex(), 0.4, num, function()
+			self.Weapon:SendWeaponAnim(ACT_VM_RELOAD)
+			self.Owner:SetAnimation(PLAYER_RELOAD)
+			
+			self:SetClip1(self:Clip1() + 1)
+			self.Owner:RemoveAmmo(1, "buckshot")
+		end)
+	end
 	
-	timer.Create("idle_" .. self:EntIndex(), (6 - self:Clip1()) * 1.2, 1, function()
-		self.Weapon:SendWeaponAnim(ACT_VM_IDLE)
-	end)
+	if not timer.Exists("idle_" .. self:EntIndex()) then
+		timer.Create("idle_" .. self:EntIndex(), (6 - self:Clip1()) * 0.5, 1, function()
+			self.Weapon:SendWeaponAnim(ACT_VM_IDLE)
+		end)
+	end
 end
 
 if CLIENT then SWEP.Cost = 50 end

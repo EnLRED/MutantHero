@@ -146,12 +146,6 @@ function GM:Think()
 end
 
 function GM:PlayerSpawn(ply) --COMMMMMMMIT
-	if not IS_ROUND_STARTED and ply:GetClassString() == "NoCLS" then
-		spectator_handler(ply)
-		
-		return
-	end
-
 	ply:UnSpectate()
 	ply:DrawWorldModel(true)
 	ply:DrawViewModel(true)
@@ -165,70 +159,78 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		ply:SetTeam(TEAM_MUTANTS)
 	end
 	
-	if ply:Team() == TEAM_HUMANS and ply:GetClassString() == "NoCLS" then
-		spectator_handler(ply)
-	end
+	timer.Simple(0.04, function()
+		if not IS_ROUND_STARTED and ply:GetClassString() == "NoCLS" then
+			spectator_handler(ply)
+			
+			return
+		end
 	
-	if ply:Team() == TEAM_SPECTATOR then
-		ply:KillSilent()
-	elseif ply:Team() == TEAM_HUMANS then
-		ply:SetNWVector("muth_startpoint", ply:GetPos())
-		ply:SetHealth(800)
-		ply:SetMaxHealth(1000)
-		ply:SetArmor(200)
-		ply:SetJumpPower(170)
-	
-		ply:SetMoney(150)
-		
-		if ply:GetClassString() == "Engineer" then
-			ply:SetModel(player_manager.TranslatePlayerModel("eli"))
-			ply:SetWalkSpeed(230)
-			ply:SetHealth(700)
-			ply:SetRunSpeed(230)
-			ply:Give("weapon_muth_turret")
-			ply:Give("weapon_muth_beacon")
+		if ply:Team() == TEAM_HUMANS and ply:GetClassString() == "NoCLS" then
+			spectator_handler(ply)
 		end
 		
-		if ply:GetClassString() == "Medic" then
-			ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
-			ply:Give("weapon_muth_medkit")
-			ply:SetHealth(750)
-		end
+		if ply:Team() == TEAM_SPECTATOR then
+			ply:KillSilent()
+		elseif ply:Team() == TEAM_HUMANS then
+			ply:SetNWVector("muth_startpoint", ply:GetPos())
+			ply:SetHealth(800)
+			ply:SetMaxHealth(1000)
+			ply:SetArmor(200)
+			ply:SetJumpPower(170)
 		
-		if ply:GetClassString() == "Berserk" then
-			ply:SetModel(player_manager.TranslatePlayerModel("odessa"))
-			ply:SetWalkSpeed(240)
-			ply:SetHealth(850)
-			ply:SetRunSpeed(240)
-			ply:Give("weapon_hook_muth")
-		end
+			ply:SetMoney(150)
+			
+			if ply:GetClassString() == "Engineer" then
+				ply:SetModel(player_manager.TranslatePlayerModel("eli"))
+				ply:SetWalkSpeed(230)
+				ply:SetHealth(700)
+				ply:SetRunSpeed(230)
+				ply:Give("weapon_muth_turret")
+				ply:Give("weapon_muth_beacon")
+			end
+			
+			if ply:GetClassString() == "Medic" then
+				ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
+				ply:Give("weapon_muth_medkit")
+				ply:SetHealth(750)
+			end
+			
+			if ply:GetClassString() == "Berserk" then
+				ply:SetModel(player_manager.TranslatePlayerModel("odessa"))
+				ply:SetWalkSpeed(240)
+				ply:SetHealth(850)
+				ply:SetRunSpeed(240)
+				ply:Give("weapon_hook_muth")
+			end
+			
+			if ply:GetClassString() == "Heavy soldier" then
+				ply:SetModel(player_manager.TranslatePlayerModel("male18"))
+				ply:SetWalkSpeed(190)
+				ply:Give("weapon_muth_ak47")
+				ply:SetHealth(1000)
+				ply:SetRunSpeed(190)
+			end
+			
+			if ply:GetClassString() == "Light soldier" then
+				ply:SetModel(player_manager.TranslatePlayerModel("male11"))
+				ply:SetWalkSpeed(240)
+				ply:SetHealth(700)
+				ply:Give("weapon_muth_mp5")
+				ply:SetRunSpeed(240)
+			end
+			
+			ply:SetupHands()
+		elseif ply:Team() == TEAM_MUTANTS then
+			ply:SetHealth(3200)
+			ply:SetMaxHealth(3200)
+			ply:SetWalkSpeed(250)
+			ply:SetRunSpeed(250)
 		
-		if ply:GetClassString() == "Heavy soldier" then
-			ply:SetModel(player_manager.TranslatePlayerModel("male18"))
-			ply:SetWalkSpeed(190)
-			ply:Give("weapon_muth_ak47")
-			ply:SetHealth(1000)
-			ply:SetRunSpeed(190)
+			ply:SetModel(player_manager.TranslatePlayerModel("charple"))
+			ply:Give("weapon_mutant_gm")
 		end
-		
-		if ply:GetClassString() == "Light soldier" then
-			ply:SetModel(player_manager.TranslatePlayerModel("male11"))
-			ply:SetWalkSpeed(240)
-			ply:SetHealth(700)
-			ply:Give("weapon_muth_mp5")
-			ply:SetRunSpeed(240)
-		end
-		
-		ply:SetupHands()
-	elseif ply:Team() == TEAM_MUTANTS then
-		ply:SetHealth(3200)
-		ply:SetMaxHealth(3200)
-		ply:SetWalkSpeed(250)
-		ply:SetRunSpeed(250)
-	
-		ply:SetModel(player_manager.TranslatePlayerModel("charple"))
-		ply:Give("weapon_mutant_gm")
-	end
+	end)
 end
 
 function GM:EntityTakeDamage(ent, dmginfo)

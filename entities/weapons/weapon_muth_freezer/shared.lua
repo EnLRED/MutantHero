@@ -1,30 +1,73 @@
-
 AddCSLuaFile()
- 
-SWEP.Weight                = 7
-SWEP.AutoSwitchTo          = false
-SWEP.AutoSwitchFrom        = false
 
-SWEP.PrintName             = "Flamethrower"
-SWEP.Slot                  = 3
-SWEP.SlotPos               = 0
+SWEP.PrintName			= "Mutant freezer"			
+SWEP.Author				= "HK47"
+SWEP.Slot				= 3
+SWEP.SlotPos			= 0
 
-SWEP.Base                  = "weapon_base"
- 
-SWEP.ViewModel             = "models/weapons/c_smg1.mdl"
-SWEP.WorldModel            = "models/weapons/w_smg1.mdl"
- 
-SWEP.Primary.ClipSize      = 1500
-SWEP.Primary.DefaultClip   = 1500
-SWEP.Primary.Delay         = 0.1
-SWEP.Primary.Ammo          = "none"
-SWEP.Primary.Automatic     = true
-SWEP.MaxAmmo               = 1500
-SWEP.Primary.Damage = 70
+SWEP.HoldType			= "smg"
+SWEP.Base = "weapon_base_muth"
 
-SWEP.UseHands              = true
+SWEP.ShowWorldModel = false
+
+SWEP.DrawAmmo = false
+
+SWEP.ViewModelBoneMods = {
+	["ValveBiped.handle"] = { scale = Vector(1, 1, 0.009), pos = Vector(0, -30, -30), angle = Angle(0, 0, 0) },
+	["ValveBiped.Bip01_L_Forearm"] = { scale = Vector(1, 1, 1), pos = Vector(0, 0, 0), angle = Angle(0, 180, 0) }
+}
+
+if CLIENT then
+	SWEP.Cost = 40
+
+	SWEP.VElements = {
+		["m+"] = { type = "Model", model = "models/props_junk/PlasticCrate01a.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0, -0.519, 5.714), angle = Angle(0, 0, 90), size = Vector(0.15, 0.497, 0.237), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["m"] = { type = "Model", model = "models/props_junk/TrafficCone001a.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0, 0, 16.104), angle = Angle(180, 0, 0), size = Vector(0.5, 0.5, 0.5), color = Color(255, 255, 191, 255), surpresslightning = false, material = "phoenix_storms/pro_gear_top2", skin = 0, bodygroup = {} },
+		["m+++++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0, 0.5, -8.301), angle = Angle(0, 90, 0), size = Vector(0.1, 0.1, 0.189), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/combine_turrets/combine_cannon", skin = 0, bodygroup = {} },
+		["m+++++++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0, -2.597, -4.676), angle = Angle(0, 90, 0), size = Vector(0.109, 0.109, 0.009), color = Color(0, 255, 255, 255), surpresslightning = false, material = "phoenix_storms/pro_gear_top2", skin = 0, bodygroup = {} },
+		["m++++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0, -0.601, -8.832), angle = Angle(0, 90, 0), size = Vector(0.1, 0.1, 0.2), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/combine_turrets/combine_cannon", skin = 0, bodygroup = {} },
+		["m++++++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0, -2.597, -1.558), angle = Angle(0, 90, 0), size = Vector(0.109, 0.109, 0.009), color = Color(0, 255, 255, 255), surpresslightning = false, material = "phoenix_storms/pro_gear_top2", skin = 0, bodygroup = {} },
+		["m++"] = { type = "Model", model = "models/props_c17/FurnitureWashingmachine001a.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0, -0.7, 6.752), angle = Angle(0, 90, 0), size = Vector(0.1, 0.07, 0.3), color = Color(255, 223, 120, 255), surpresslightning = false, material = "phoenix_storms/dome", skin = 0, bodygroup = {} },
+		["m+++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0, -2.597, -6.753), angle = Angle(0, 90, 0), size = Vector(0.1, 0.1, 0.3), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/combine_dropship/combine_dropship01", skin = 0, bodygroup = {} }
+	}
+	
+	SWEP.WElements = {
+		["m+"] = { type = "Model", model = "models/props_junk/PlasticCrate01a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(9.869, 1.5, -6.753), angle = Angle(0, 90, 10), size = Vector(0.15, 0.497, 0.237), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
+		["m"] = { type = "Model", model = "models/props_junk/TrafficCone001a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(22.337, 1.5, -8.832), angle = Angle(80, 0, 0), size = Vector(0.5, 0.5, 0.5), color = Color(255, 255, 191, 255), surpresslightning = false, material = "phoenix_storms/pro_gear_top2", skin = 0, bodygroup = {} },
+		["m+++++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(6.752, 1.5, -4.676), angle = Angle(80, 0, 0), size = Vector(0.1, 0.1, 0.189), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/combine_turrets/combine_cannon", skin = 0, bodygroup = {} },
+		["m+++++++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(3.635, 1.5, -7.1), angle = Angle(80, 0, 0), size = Vector(0.109, 0.109, 0.009), color = Color(0, 255, 255, 255), surpresslightning = false, material = "phoenix_storms/pro_gear_top2", skin = 0, bodygroup = {} },
+		["m++++++++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(3.635, 1.5, -3.636), angle = Angle(1.169, 0, 0), size = Vector(0.07, 0.07, 0.1), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/combine_turrets/combine_cannon", skin = 0, bodygroup = {} },
+		["m++++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(5.714, 1.5, -5.715), angle = Angle(80, 0, 0), size = Vector(0.1, 0.1, 0.2), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/combine_turrets/combine_cannon", skin = 0, bodygroup = {} },
+		["m++++++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(1.557, 1.5, -6.7), angle = Angle(80, 0, 0), size = Vector(0.109, 0.109, 0.009), color = Color(0, 255, 255, 255), surpresslightning = false, material = "phoenix_storms/pro_gear_top2", skin = 0, bodygroup = {} },
+		["m++"] = { type = "Model", model = "models/props_c17/FurnitureWashingmachine001a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(8.831, 1.5, -6.753), angle = Angle(80, 0, 0), size = Vector(0.1, 0.07, 0.3), color = Color(255, 223, 120, 255), surpresslightning = false, material = "phoenix_storms/dome", skin = 0, bodygroup = {} },
+		["m+++"] = { type = "Model", model = "models/props_c17/oildrum001.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(12.987, 1.5, -8.832), angle = Angle(80, 0, 0), size = Vector(0.1, 0.1, 0.3), color = Color(255, 255, 255, 255), surpresslightning = false, material = "models/combine_dropship/combine_dropship01", skin = 0, bodygroup = {} }
+	}
+end
 
 SWEP.HoldType = "smg"
+
+SWEP.ViewModelFOV = 60
+SWEP.ViewModelFlip = false
+
+SWEP.ViewModel = "models/weapons/v_smg1.mdl"
+SWEP.WorldModel = "models/weapons/w_smg1.mdl"
+
+SWEP.Weight				= 15
+SWEP.AutoSwitchTo		= false
+SWEP.AutoSwitchFrom		= false
+
+SWEP.Primary.ClipSize		= -1
+SWEP.Primary.Delay			= 0.4
+SWEP.Primary.DefaultClip	= -1
+SWEP.Primary.Automatic		= true
+SWEP.Primary.Ammo			= "none"
+
+SWEP.Secondary.ClipSize		= -1
+SWEP.Secondary.DefaultClip	= -1
+SWEP.Secondary.Automatic	= true
+SWEP.Secondary.Ammo			= "none"
+
+SWEP.UseHands = true
 
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
@@ -62,50 +105,25 @@ function SWEP:Initialize()
 end
 
 function SWEP:PrimaryAttack()
-	if self.Owner:WaterLevel() > 0 then return end
+	self:SetNextPrimaryFire(CurTime() + 20)
 	
-	if not self.Sound then
-		self.Sound = CreateSound(self.Owner, "thrusters/rocket04.wav")
-		self.Sound:Play()
-		self.Sound:ChangeVolume(1, 0.1)
-	else
-		self.Sound:ChangeVolume(1, 0.1)
-	end
-
-	local tr = util.TraceLine { 
-		start = self.Owner:GetShootPos(),
-		endpos = self.Owner:GetShootPos() + self.Owner:GetAimVector() * 300,
-		filter = self.Owner
-	}
+	self.Owner:EmitSound("ambient/energy/whiteflash.wav")
+	local tr = self.Owner:GetEyeTrace()
+	local ent = tr.Entity
 	
-	if SERVER then
-		if tr.Entity:IsPlayer() and IsValid(tr.Entity) then
-			if tr.Entity:Team() == 2 then tr.Entity:TakeDamage(70) tr.Entity:Ignite(math.random(2, 4)) end
-		end
-		
-		local ef = EffectData()
-		ef:SetOrigin(tr.HitPos)
-		ef:SetStart(self.Owner:GetShootPos())
-		ef:SetAttachment(1)
-		ef:SetEntity(self.Weapon)
-		util.Effect("flamethrower_muth_fire", ef, true, true)
-	end
-	
-	self:SetNextPrimaryFire(CurTime() + 0.06)
-end
-
-function SWEP:Think()
-	if self.Owner:KeyReleased(IN_ATTACK) or not self.Owner:KeyDown(IN_ATTACK) then
-		if self.Sound then
-			self.Sound:ChangeVolume(0, 0.1)
+	if IsValid(ent) and ent:IsNPC() then
+		for k, v in pairs(ents.FindInSphere(tr.HitPos, 120)) do
+			if IsValid(v) and v:IsPlayer() and v:Team() == TEAM_MUTANTS then
+				v:Lock()
+				
+				timer.Create("unlock_" .. v:EntIndex(), 4, 1, function()
+					if IsValid(v) then v:UnLock() end
+				end)
+			end
 		end
 	end
-end
-
-function SWEP:Deploy()
-	self.Weapon:SendWeaponAnim(ACT_VM_DRAW) 
 	
-	return true
+	if SERVER then self.Owner:StripWeapon(self.ClassName) end
 end
 
 function SWEP:Holster()
@@ -115,9 +133,7 @@ function SWEP:Holster()
 			self:ResetBonePositions(vm)
 		end
 	end
-	
-	if self.Sound then self.Sound:ChangeVolume(0, 0.1) end
-	
+
 	return true
 end
 
@@ -128,26 +144,7 @@ function SWEP:OnRemove()
 	self:Holster()
 end
 
----model---
-
-
 if CLIENT then
-	SWEP.Cost = 60
-
-	SWEP.VElements = {
-		["m1"] = { type = "Model", model = "models/hunter/tubes/tube1x1x1.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0, -0.401, 10), angle = Angle(0, 0, 0), size = Vector(0.039, 0.039, 0.14), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["m2"] = { type = "Model", model = "models/hunter/tubes/circle2x2.mdl", bone = "ValveBiped.Bip01", rel = "m1", pos = Vector(0, 0, 0), angle = Angle(0, 0, 0), size = Vector(0.019, 0.019, 0.019), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["m3"] = { type = "Model", model = "models/items/battery.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(0.3, 0, -6.818), angle = Angle(0, 0, 0), size = Vector(0.5, 0.5, 0.5), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["m4"] = { type = "Model", model = "models/props_junk/PropaneCanister001a.mdl", bone = "ValveBiped.base", rel = "", pos = Vector(1.363, 1.363, 3.181), angle = Angle(180, 0, 0), size = Vector(0.209, 0.209, 0.209), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
-	}
-
-	SWEP.WElements = {
-		["m1"] = { type = "Model", model = "models/hunter/tubes/tube1x1x1.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(15, 1.5, -7.5), angle = Angle(-100, 0, 0), size = Vector(0.039, 0.039, 0.14), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["m2"] = { type = "Model", model = "models/hunter/tubes/circle2x2.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "m1", pos = Vector(0, 0, 0), angle = Angle(0, 0, 0), size = Vector(0.019, 0.019, 0.019), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["m3"] = { type = "Model", model = "models/items/battery.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(0, 1.5, -4), angle = Angle(0, -90, -100), size = Vector(0.5, 0.5, 0.5), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} },
-		["m4"] = { type = "Model", model = "models/props_junk/PropaneCanister001a.mdl", bone = "ValveBiped.Bip01_R_Hand", rel = "", pos = Vector(9.545, 2.7, -5), angle = Angle(80, 0, 0), size = Vector(0.209, 0.209, 0.209), color = Color(255, 255, 255, 255), surpresslightning = false, material = "", skin = 0, bodygroup = {} }
-	}
-	
 	SWEP.vRenderOrder = nil
 	function SWEP:ViewModelDrawn()
 		
@@ -565,16 +562,4 @@ if CLIENT then
 		
 	end
 end
-
-
-
-
-
-
-
-
-
-
-
-
 

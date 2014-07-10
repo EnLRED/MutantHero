@@ -13,7 +13,7 @@ SWEP.DrawAmmo = true
 SWEP.Base = "weapon_base_muth"
 
 SWEP.Primary.ClipSize      = 60
-SWEP.Primary.DefaultClip   = 600
+SWEP.Primary.DefaultClip   = 400
 SWEP.Primary.Delay         = 0.04
 SWEP.Primary.Ammo          = "357"
 SWEP.Primary.Automatic     = true
@@ -27,9 +27,9 @@ SWEP.Base = "weapon_base_muth"
 
 SWEP.HoldType = "smg"
 
-SWEP.Spread = Vector(0.01, 0.01, 0.01)
+SWEP.Spread = Vector(0.015, 0.015, 0.015)
 SWEP.UseHands              = true
 
-if CLIENT then SWEP.Cost = 45 end
+if CLIENT then SWEP.Cost = 55 end
 
 

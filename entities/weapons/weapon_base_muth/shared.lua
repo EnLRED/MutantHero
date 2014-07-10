@@ -81,6 +81,9 @@ function SWEP:SecondaryAttack()
 end
 
 function SWEP:Deploy()
+	self.Weapon:SendWeaponAnim(ACT_VM_DRAW) 
+	self:SetNextPrimaryFire(CurTime() + self:SequenceDuration())
+	
 	return true
 end
 

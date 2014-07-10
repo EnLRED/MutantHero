@@ -31,7 +31,7 @@ function SWEP:EntitySetUp(ent)
 	end
 	
 	hook.Add("PlayerSpawn", "check_" .. ent:EntIndex(), function(ply)
-		if not IsValid(ent) then hook.Remove("PlayerSpawn", "check_" .. ent:EntIndex()) end
+		if not IsValid(ent) then hook.Remove("PlayerSpawn", "check_" .. ent:EntIndex()) return end
 		
 		timer.Simple(0.4, function()
 			if ply:Team() == TEAM_HUMANS then
