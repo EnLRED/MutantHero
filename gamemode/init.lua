@@ -3,6 +3,7 @@ AddCSLuaFile("shared.lua")
 AddCSLuaFile("changeclass.lua")
 AddCSLuaFile("hud.lua")
 AddCSLuaFile("pointshop.lua")
+AddCSLuaFile("notify.lua")
 AddCSLuaFile("player_extended_sh.lua")
 AddCSLuaFile("player_extended_cl.lua")
 AddCSLuaFile("postpr.lua")
@@ -52,6 +53,10 @@ function GM:RestartRound(whoWin) //1 - humans, 0 - mutants
 	if whoWin then note = "HUMANS WIN!!!" str = "surface.PlaySound('music/hl2_song3.mp3')" else note = "MUTANTS WIN!!!" str = "surface.PlaySound('music/radio1.mp3')" end
 	for k, v in pairs(player.GetAll()) do v:SetClass(0) v:SendLua(str) v:ChatPrint(note .. " Restarting round...") end
 	
+	umsg.Start("notify_muth")
+		umsg.String(note .. " Restarting round...")
+	umsg.End()
+	
 	timer.Simple(2, function() for k, v in pairs(player.GetAll()) do v:Spawn() end end)
 end
 
@@ -60,7 +65,7 @@ function GM:PlayerNoClip()
 end
 
 function GM:InitPostEntity()
-	print("Round starts...\n\n\n")
+	print("Round starts...\n")
 	----Start game | it looks like  main() {} :D
 	timer.Create("count_round_end", 1, 0, function()
 		ROUND_TIME_SECS = ROUND_TIME_SECS - 1
@@ -73,7 +78,8 @@ function GM:InitPostEntity()
 		
 		SetGlobalInt("timetoendsec", ROUND_TIME_SECS)
 	end)
-
+	print("'End round' timer created...\n")
+	
 	ROUND_SETTIME = old_time_standart
 	ROUND_TIME_SECS = 60
 	IS_ROUND_STARTED = false
@@ -84,15 +90,48 @@ function GM:InitPostEntity()
 	SetGlobalBool("round_started", IS_ROUND_STARTED)
 	SetGlobalBool("round_end", IS_ROUND_END)
 	
+	print("Bools and time activated...\n\n")
+	
+	timer.Create("spawn_pointshop", 120, 1, function()
+		local ent = ents.Create("prop_physics")
+		ent:SetPos(player.GetAll()[math.random(1, #player.GetAll())]:GetNWVector("muth_startpoint"))
+		ent:SetModel("models/Items/item_item_crate.mdl")
+		ent:Spawn()
+		ent:SetHealth(99999)
+		ent:SetNWBool("is_pointshop", true)
+		ent:SetNWBool("made_by_people_muth", true)
+		
+		for k, v in pairs(team.GetPlayers(TEAM_HUMANS)) do v:ChatPrint("Pointshop spawned!") end
+		
+		hook.Add("Think", "pointshop_after", function()
+			if not IsValid(ent) then hook.Remove("Think", "pointshop_after") return end
+			
+			for k, v in pairs(ents.FindInSphere(ent:GetPos(), 150)) do
+				if v:IsPlayer() and v:Team() == TEAM_HUMANS and v:GetEyeTrace().Entity == ent and v:KeyPressed(IN_USE) then
+					umsg.Start("open_shop_muth2", ply)
+					umsg.End()
+				end
+			end
+		end)
+	end)
+	
 	print("Done!")
 end
 
 function GM:PlayerDeath(victim, inflictor, attacker)
 	if IsValid(attacker) and attacker:IsPlayer() then
 		attacker:AddFrags(1)
+		
+		if attacker:Team() == TEAM_HUMANS then
+			attacker:SetMoney(attacker:GetMoney() + 10)
+			
+			umsg.Start("notify_muth", attacker)
+				umsg.String("+10$")
+			umsg.End()
+		end
 	end
 	
-	timer.Simple(1, function()
+	timer.Simple(0.5, function()
 		--Mutants win
 		if #team.GetPlayers(TEAM_HUMANS) <= 0 and not IS_ROUND_END then
 			IS_ROUND_END = true
@@ -126,16 +165,20 @@ function GM:Think()
 			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
 		end
 		
+		umsg.Start("notify_muth")
+			umsg.String("ROUND STARTED!!!")
+		umsg.End()
+		
 		--Spawn random mutants
 		if #player.GetAll() > 1 then
 			local numofneeded = math.Clamp(math.random(2), #player.GetAll())
 			
-			for I = 1, numofneeded do
+			for I = 1, math.random(numofneeded) do
 				local p = math.random(#player.GetAll())
 				
 				if IsValid(player.GetAll()[p]) then
 					player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
-					timer.Simple(0.1, function() player.GetAll()[p]:Spawn() end)
+					timer.Simple(0.1, function() if IsValid(player.GetAll()[p]) then player.GetAll()[p]:Spawn() end end)
 				end
 			end
 		end
@@ -153,13 +196,15 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	ply:StripWeapons()
 	ply:RemoveAllAmmo()
 	
+	timer.Stop("kill_" .. ply:EntIndex())
+	
 	if not IS_ROUND_STARTED then
 		ply:SetTeam(TEAM_HUMANS)
 	else
 		ply:SetTeam(TEAM_MUTANTS)
 	end
 	
-	timer.Simple(0.04, function()
+	timer.Simple(0.06, function()
 		if not IS_ROUND_STARTED and ply:GetClassString() == "NoCLS" then
 			spectator_handler(ply)
 			
@@ -170,22 +215,21 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 			spectator_handler(ply)
 		end
 		
+		ply:SetNWVector("muth_startpoint", ply:GetPos())
+		
 		if ply:Team() == TEAM_SPECTATOR then
 			ply:KillSilent()
 		elseif ply:Team() == TEAM_HUMANS then
-			ply:SetNWVector("muth_startpoint", ply:GetPos())
-			ply:SetHealth(800)
-			ply:SetMaxHealth(1000)
-			ply:SetArmor(200)
 			ply:SetJumpPower(170)
 		
 			ply:SetMoney(150)
 			
 			if ply:GetClassString() == "Engineer" then
 				ply:SetModel(player_manager.TranslatePlayerModel("eli"))
-				ply:SetWalkSpeed(230)
+				ply:SetWalkSpeed(240)
 				ply:SetHealth(700)
-				ply:SetRunSpeed(230)
+				ply:SetRunSpeed(240)
+				ply:SetMaxHealth(700)
 				ply:Give("weapon_muth_turret")
 				ply:Give("weapon_muth_beacon")
 			end
@@ -193,67 +237,139 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 			if ply:GetClassString() == "Medic" then
 				ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
 				ply:Give("weapon_muth_medkit")
+				ply:Give("weapon_muth_antidote")
+				ply:SetWalkSpeed(240)
+				ply:SetRunSpeed(240)
 				ply:SetHealth(750)
+				ply:SetMaxHealth(750)
 			end
 			
 			if ply:GetClassString() == "Berserk" then
 				ply:SetModel(player_manager.TranslatePlayerModel("odessa"))
-				ply:SetWalkSpeed(240)
+				ply:SetWalkSpeed(245)
 				ply:SetHealth(850)
-				ply:SetRunSpeed(240)
+				ply:SetMaxHealth(850)
+				ply:SetRunSpeed(245)
 				ply:Give("weapon_hook_muth")
 			end
 			
 			if ply:GetClassString() == "Heavy soldier" then
 				ply:SetModel(player_manager.TranslatePlayerModel("male18"))
-				ply:SetWalkSpeed(190)
+				ply:SetWalkSpeed(210)
 				ply:Give("weapon_muth_ak47")
-				ply:SetHealth(1000)
-				ply:SetRunSpeed(190)
+				ply:SetHealth(1100)
+				ply:SetMaxHealth(1100)
+				ply:SetRunSpeed(210)
 			end
 			
 			if ply:GetClassString() == "Light soldier" then
 				ply:SetModel(player_manager.TranslatePlayerModel("male11"))
 				ply:SetWalkSpeed(240)
 				ply:SetHealth(700)
+				ply:SetMaxHealth(700)
 				ply:Give("weapon_muth_mp5")
 				ply:SetRunSpeed(240)
 			end
 			
 			ply:SetupHands()
 		elseif ply:Team() == TEAM_MUTANTS then
-			ply:SetHealth(3200)
-			ply:SetMaxHealth(3200)
-			ply:SetWalkSpeed(250)
-			ply:SetRunSpeed(250)
-		
-			ply:SetModel(player_manager.TranslatePlayerModel("charple"))
-			ply:Give("weapon_mutant_gm")
+			ply:SetClass(math.random(1, 5))
+			
+			timer.Create("spawn_set_up_" .. ply:EntIndex(), 0.15, 1, function()
+				if IsValid(ply) then
+					ply:SetHealth(3200)
+					ply:SetMaxHealth(3200)
+					ply:SetWalkSpeed(255)
+					ply:SetRunSpeed(255)
+				
+					ply:SetModel(player_manager.TranslatePlayerModel("charple"))
+					ply:Give("weapon_mutant_gm")
+					
+					if ply:GetClassString() == "Runner" then
+						ply:SetWalkSpeed(290)
+						ply:SetRunSpeed(290)
+					end
+					
+					if ply:GetClassString() == "Jumper" then
+						ply:SetJumpPower(450)
+					end
+					
+					ply:ChatPrint("Your class is " .. string.lower(ply:GetClassString()))
+				end
+			end)
 		end
 	end)
+end
+
+function GM:PlayerDeathThink(ply) //no spawn
+	if ply:Team() != TEAM_SPECTATOR then return end
+	ply:Spectate(OBS_MODE_ROAMING)
+	
+	if ply:KeyDown(IN_ATTACK) then end
 end
 
 function GM:EntityTakeDamage(ent, dmginfo)
 	local attacker = dmginfo:GetAttacker()
 	
-	if IsValid(attacker) and attacker:IsPlayer() and ent:IsPlayer() and attacker:Team() == ent:Team() then
-		dmginfo:SetDamage(0)
-		dmginfo:ScaleDamage(0)
-	end
+	if IsValid(attacker) then
+		-- No kill friends :3
+		if attacker:IsPlayer() and ent:IsPlayer() and attacker:Team() == ent:Team() then
+			dmginfo:SetDamage(0)
+			dmginfo:ScaleDamage(0)
+		end
+		
+		-- Mutant's damage
+		if attacker:IsPlayer() and attacker:Team() == TEAM_MUTANTS then
+			if math.random(1, 100) == 50 then
+				local time = math.random(50, 70)
+			
+				ent:SetColor(Color(100, 200, 100))
+				ent:ChatPrint("You have been infected. You have " .. time .. " to have antidote")
+				
+				timer.Create("kill_" .. ent:EntIndex(), time, 1, function()
+					if IsValid(ent) and ent:Team() == TEAM_HUMANS then
+						ent:Kill()
+					end
+				end)
+			end
+			
+			if attacker:GetClassString() == "Berserk" then
+				dmginfo:SetDamage(dmginfo:GetDamage() + 150)
+			end	
+			
+			if attacker:GetClassString() == "Runner" then
+				dmginfo:SetDamage(dmginfo:GetDamage() - 80)
+			end
+		end
 	
-	if IsValid(attacker) and attacker:IsPlayer() then 
-		if attacker:GetClassString() == "Medic" then
-			dmginfo:SetDamage(dmginfo:GetDamage() - 10)
-		elseif attacker:GetClassString() == "Heavy soldier" then
-			dmginfo:SetDamage(dmginfo:GetDamage() * 1.25)
-		elseif attacker:GetClassString() == "Berserk" and attacker:GetActiveWeapon().IsMelee then
-			dmginfo:SetDamage(dmginfo:GetDamage() * 1.35)
+		if attacker:IsNPC() and attacker:GetClass() == "npc_turret_floor" then
+			dmginfo:SetDamage(dmginfo:GetDamage() * 40)
+		end
+		
+		-- Human's damage
+		if attacker:IsPlayer() and attacker:Team() == TEAM_HUMANS then 
+			if attacker:GetClassString() == "Medic" then
+				dmginfo:SetDamage(dmginfo:GetDamage() - 15)
+			elseif attacker:GetClassString() == "Heavy soldier" then
+				dmginfo:SetDamage(dmginfo:GetDamage() * 1.25)
+			elseif attacker:GetClassString() == "Berserk" and attacker:GetActiveWeapon().IsMelee then
+				dmginfo:SetDamage(dmginfo:GetDamage() * 1.35)
+			end
 		end
 	end
 end
 
 function GM:DoPlayerDeath(ply)
 	ply:CreateRagdoll()
+	ply:SetTeam(TEAM_SPECTATOR)
+	ply:Spectate(OBS_MODE_ROAMING)
+	ply:KillSilent()
+	
+	timer.Simple(15, function()
+		if ply:Alive() then return end
+		
+		ply:Spawn()
+	end)
 end
 
 

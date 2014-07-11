@@ -111,7 +111,7 @@ function SWEP:PrimaryAttack()
 			
 				targ = slashtrace.Entity
 				
-				if targ:IsPlayer() then
+				if targ:IsPlayer() and targ:Team() != self.Owner:Team() then
 					self.Weapon:EmitSound(self.SlashSound)
 				
 					local dmg = DamageInfo()

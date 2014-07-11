@@ -199,7 +199,7 @@ function GM:HUDPaint()
 	surface.SetDrawColor(Color(255, 0, 0))
 	
 	surface.DrawOutlinedRect((sh / 18) - 2, (sw / 1.94) - 2, (sw / 6.3) + 6, (sh / 30) + 4)
-	surface.DrawRect((sh / 18) + 0.5, (sw / 1.94), sw / (LocalPlayer():Health()), sh / 30)
+	surface.DrawRect((sh / 18) + 0.5, (sw / 1.94), LocalPlayer():Health() / (LocalPlayer():GetMaxHealth() / 306), sh / 30)
 	
 	surface.SetDrawColor(Color(0, 0, 255))
 	
@@ -219,15 +219,6 @@ function GM:HUDPaint()
 	
 	//------------------------------------------------------------lal-----------------\\
 	
-	if LocalPlayer():Team() == TEAM_MUTANTS then ---//mutant's hud
-		for k, v in pairs(team.GetPlayers(1)) do
-			local pos = (v:GetPos() + Vector(0, 0, 50)):ToScreen()
-		
-			surface.DrawCircle(pos.x, pos.y, sh / 170, Color(255, 0, 0))
-		end
-	end
-	
-	
 	
 	if LocalPlayer():Team() == TEAM_HUMANS then ---///human's helmet settings
 		if zvision then
@@ -243,16 +234,22 @@ function GM:HUDPaint()
 			end
 		end
 		
-		for k, v in pairs(ents.FindInSphere(LocalPlayer():GetPos(), 3000)) do
+		for k, v in pairs(ents.FindInSphere(LocalPlayer():GetPos(), 6000)) do
 			if v:GetNWBool("isBeacon") then
 				local pos = v:GetPos():ToScreen()
 				
-				surface.DrawCircle(pos.x, pos.y, sh / math.abs(math.sin(CurTime()) * 70), Color(0, 255, 0))
+				surface.DrawCircle(pos.x, pos.y, sh / math.abs(math.sin(CurTime()) * 20), Color(0, 255, 0))
+			end
+			
+			if v:GetNWBool("is_pointshop") then
+				local pos = v:GetPos():ToScreen()
+				
+				draw.DrawText("POINTSHOP", "DefaultFixed", pos.x, pos.y, Color(0, 255, 0), TEXT_ALIGN_CENTER)
 			end
 		end
 	
-		surface.SetDrawColor(Color(0, 255, 0))
-		surface.DrawRect((sh / 3.5) - 3, sw / 1.94, (sh / 18) + 1, sw / 52)
+		//surface.SetDrawColor(Color(0, 255, 0))
+		//surface.DrawRect((sh / 3.5) - 3, sw / 1.94, (sh / 18) + 1, sw / 52)
 	
 		surface.SetTexture(surface.GetTextureID("gui/center_gradient"))
 		surface.SetDrawColor(Color(0, 0, 255))

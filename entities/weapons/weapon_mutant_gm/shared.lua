@@ -54,7 +54,7 @@ function SWEP:PrimaryAttack()
 				
 				if targ:IsPlayer() then
 					local dmg = DamageInfo()
-					dmg:SetDamage(math.random(300, 400))
+					dmg:SetDamage(math.random(200, 250))
 					dmg:SetDamageType(DMG_SLASH)
 					dmg:SetAttacker(self.Owner)
 					dmg:SetInflictor(self.Weapon)
