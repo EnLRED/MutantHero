@@ -9,12 +9,16 @@ AddCSLuaFile("player_extended_cl.lua")
 AddCSLuaFile("postpr.lua")
 include("shared.lua")
 
-local old_time_standart = 7
+local time_pause = 15 //pause time
 
-ROUND_SETTIME = old_time_standart
-ROUND_TIME_SECS = 60
+ROUND_TIME_SECS = 180
 IS_ROUND_STARTED = false
-IS_ROUND_END = false
+
+local radio_spawn = {
+	["gm_construct"] = Vector(-4187.1948242188, -1833.9692382813, -143.96875),
+	["gm_flatgrass"] = Vector(0, 0, 0),
+	["gm_bigcity"] = Vector(-1420.9265136719, 4894.9672851563, -11135.96875)
+}
 
 local Models = {
 	"models/player/zombie_fast.mdl",
@@ -25,14 +29,7 @@ util.AddNetworkString("pointshop_toserv")
 util.AddNetworkString("froms_toclient_check")
 util.AddNetworkString("change_class")
 
-function GM:ShowSpare1(ply)
-	if IS_ROUND_STARTED or ply:Team() == TEAM_MUTANTS then ply:ChatPrint("You can't use pointshop because round is started!") return end
-	
-	umsg.Start("open_shop_muth", ply)
-    umsg.End()
-end
-
-function GM:Initialize()
+function GM:Initialize() --stuff trash scrap
 	util.PrecacheSound("npc/stalker/stalker_scream1.wav")
 	util.PrecacheSound("npc/crow/idle3.wav")
 	util.PrecacheSound("music/hl2_song3.mp3")
@@ -41,23 +38,43 @@ function GM:Initialize()
 end
 
 function GM:RestartRound(whoWin) //1 - humans, 0 - mutants
-	for k, v in pairs(ents.GetAll()) do
-		if v:GetNWBool("made_by_people_muth") then v:Remove() end
-	end
-
-	self:InitPostEntity()
+	ROUND_TIME_SECS = 180
+	IS_ROUND_STARTED = false
+	
+	SetGlobalInt("timetoendsec", ROUND_TIME_SECS) --stufffff
+	SetGlobalInt("timetostart", time_pause) --stuffff
+	SetGlobalBool("round_started", IS_ROUND_STARTED) --not stuffff
+	SetGlobalBool("radio_clk", false) --stufffff
+	
+	timer.Stop("count_round_end")
 	
 	local str = "nil"
-	local note = "Error! Sorry somethings has crashed (no argument?)"
+	local note = "ERROR"
 	
-	if whoWin then note = "HUMANS WIN!!!" str = "surface.PlaySound('music/hl2_song3.mp3')" else note = "MUTANTS WIN!!!" str = "surface.PlaySound('music/radio1.mp3')" end
+	if whoWin then
+		umsg.Start("draw_end_muth")
+		umsg.End()
+	
+		note = "HUMANS WIN!!!" 
+		str = "surface.PlaySound('music/hl2_song3.mp3')" 
+	else 
+		note = "MUTANTS WIN!!!" 
+		str = "surface.PlaySound('music/radio1.mp3')" 
+	end
 	for k, v in pairs(player.GetAll()) do v:SetClass(0) v:SendLua(str) v:ChatPrint(note .. " Restarting round...") end
 	
 	umsg.Start("notify_muth")
 		umsg.String(note .. " Restarting round...")
 	umsg.End()
 	
-	timer.Simple(2, function() for k, v in pairs(player.GetAll()) do v:Spawn() end end)
+	timer.Simple(4, function() 
+		for k, v in pairs(ents.GetAll()) do
+			if v:GetNWBool("made_by_people_muth") then v:Remove() end
+		end
+	
+		self:InitPostEntity() 
+		for k, v in pairs(player.GetAll()) do v:Spawn() end 
+	end)
 end
 
 function GM:PlayerNoClip()
@@ -65,57 +82,69 @@ function GM:PlayerNoClip()
 end
 
 function GM:InitPostEntity()
-	print("Round starts...\n")
-	----Start game | it looks like  main() {} :D
-	timer.Create("count_round_end", 1, 0, function()
-		ROUND_TIME_SECS = ROUND_TIME_SECS - 1
-		
-		--Tick / Time
-		if ROUND_TIME_SECS <= 0 then ROUND_SETTIME = ROUND_SETTIME - 1 SetGlobalInt("timetoend", ROUND_SETTIME) ROUND_TIME_SECS = 60 end
-		
-		--Humans win
-		if ROUND_TIME_SECS <= 1 and ROUND_SETTIME <= 0 then IS_ROUND_END = true SetGlobalBool("round_end", IS_ROUND_END) self:RestartRound(true) end
-		
-		SetGlobalInt("timetoendsec", ROUND_TIME_SECS)
-	end)
-	print("'End round' timer created...\n")
-	
-	ROUND_SETTIME = old_time_standart
-	ROUND_TIME_SECS = 60
+	ROUND_TIME_SECS = 180
 	IS_ROUND_STARTED = false
-	IS_ROUND_END = false
 	
-	SetGlobalInt("timetoend", ROUND_SETTIME)
-	SetGlobalInt("timetoendsec", ROUND_TIME_SECS)
-	SetGlobalBool("round_started", IS_ROUND_STARTED)
-	SetGlobalBool("round_end", IS_ROUND_END)
+	SetGlobalInt("timetoendsec", ROUND_TIME_SECS) --stufffff
+	SetGlobalInt("timetostart", time_pause) --stuffff
+	SetGlobalBool("round_started", IS_ROUND_STARTED) --not stuffff
+	SetGlobalBool("radio_clk", false) --stufffff
 	
-	print("Bools and time activated...\n\n")
+	SetGlobalVector("evacuation_zone", random_evacuation[game.GetMap()][math.random(1, 3)])
+
+	timer.Create("count_round_start", 1, time_pause, function() --stufffffffff
+		SetGlobalInt("timetostart", GetGlobalInt("timetostart") - 1)
+	end)
 	
-	timer.Create("spawn_pointshop", 120, 1, function()
-		local ent = ents.Create("prop_physics")
-		ent:SetPos(player.GetAll()[math.random(1, #player.GetAll())]:GetNWVector("muth_startpoint"))
-		ent:SetModel("models/Items/item_item_crate.mdl")
-		ent:Spawn()
-		ent:SetHealth(99999)
-		ent:SetNWBool("is_pointshop", true)
-		ent:SetNWBool("made_by_people_muth", true)
+	--Start round
+	timer.Create("start_round", time_pause, 1, function()
+		for k, v in pairs(player.GetAll()) do 
+			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
+		end
 		
-		for k, v in pairs(team.GetPlayers(TEAM_HUMANS)) do v:ChatPrint("Pointshop spawned!") end
+		umsg.Start("notify_muth")
+			umsg.String("ROUND STARTED!!!")
+		umsg.End()
 		
-		hook.Add("Think", "pointshop_after", function()
-			if not IsValid(ent) then hook.Remove("Think", "pointshop_after") return end
+		--Spawn random mutants
+		if #player.GetAll() > 1 then
+			local numofneeded = math.Clamp(math.random(2), #player.GetAll())
 			
-			for k, v in pairs(ents.FindInSphere(ent:GetPos(), 150)) do
-				if v:IsPlayer() and v:Team() == TEAM_HUMANS and v:GetEyeTrace().Entity == ent and v:KeyPressed(IN_USE) then
-					umsg.Start("open_shop_muth2", ply)
-					umsg.End()
+			for I = 1, math.random(1, numofneeded) do
+				local p = math.random(#player.GetAll())
+				
+				if IsValid(player.GetAll()[p]) then
+					player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
+					timer.Simple(0.1, function() if IsValid(player.GetAll()[p]) then player.GetAll()[p]:Spawn() end end)
 				end
 			end
-		end)
+		end
+		
+		IS_ROUND_STARTED = true
+		SetGlobalBool("round_started", IS_ROUND_STARTED)
 	end)
 	
-	print("Done!")
+	
+	--Set up radio
+	local ent = ents.Create("ent_radio_muth")
+	if map_coordinates[game.GetMap()].radio_spawn then
+		ent:SetPos(map_coordinates[game.GetMap()].radio_spawn)
+	else
+		ent:SetPos(Vector(0, 0, 0))
+		for k, v in pairs(player.GetAll()) do v:ChatPrint("Sorry this map is not included for Mutant-hero :(") end
+	end
+	ent:SetAngles(Angle(0, math.random(0, 360), 0))
+	ent:Spawn()
+	
+	
+	timer.Create("spawn_pointshop", 10, 1, function()
+		local ent = ents.Create("ent_pointshop_muth")
+		ent:SetPos(map_coordinates[game.GetMap()].pointshop_spawn)
+		ent:Spawn()
+		ent:GetPhysicsObject():EnableMotion(false)
+		
+		for k, v in pairs(team.GetPlayers(TEAM_HUMANS)) do v:ChatPrint("Pointshop spawned!") end
+	end)
 end
 
 function GM:PlayerDeath(victim, inflictor, attacker)
@@ -123,19 +152,29 @@ function GM:PlayerDeath(victim, inflictor, attacker)
 		attacker:AddFrags(1)
 		
 		if attacker:Team() == TEAM_HUMANS then
-			attacker:SetMoney(attacker:GetMoney() + 10)
+			local str = "+0$"
+		
+			--Monneeeey $
+			if victim:GetClassString() == "Faster" or victim:GetClassString() == "Berserk" then
+				str = "+20$"
+				attacker:SetMoney(attacker:GetMoney() + 20)
+			elseif victim:GetClassString() == "The child of darkness" then
+				str = "+60$"
+				attacker:SetMoney(attacker:GetMoney() + 60)
+			else
+				str = "+10$"
+				attacker:SetMoney(attacker:GetMoney() + 10)
+			end
 			
 			umsg.Start("notify_muth", attacker)
-				umsg.String("+10$")
+				umsg.String(str)
 			umsg.End()
 		end
 	end
 	
-	timer.Simple(0.5, function()
+	timer.Create("restart", 0.2, 1, function()
 		--Mutants win
-		if #team.GetPlayers(TEAM_HUMANS) <= 0 and not IS_ROUND_END then
-			IS_ROUND_END = true
-			SetGlobalBool("round_end", IS_ROUND_END)
+		if #team.GetPlayers(TEAM_HUMANS) <= 0 then
 			self:RestartRound(false)
 		end
 	end)
@@ -143,7 +182,32 @@ function GM:PlayerDeath(victim, inflictor, attacker)
 	victim:AddDeaths(1)
 end
 
+local wait_muth = 0
+
 function GM:Think()
+	if ROUND_TIME_SECS <= 1 and CurTime() > wait_muth then
+		local count = 0
+		
+		local rad = GetGlobalVector("evacuation_zone")
+		if not rad then rad = Vector(0, 0, 0) end
+		
+		for k, v in pairs(ents.FindInSphere(rad, 1200)) do
+			if v:IsPlayer() and v:Team() == TEAM_HUMANS then
+				count = count + 1
+			end
+		end
+		
+		if count > 0 then
+			self:RestartRound(true)
+			for p, pl in pairs(player.GetAll()) do pl:ChatPrint(count .. " evacuated!") end
+		else
+			self:RestartRound(false)
+			for p, pl in pairs(player.GetAll()) do pl:ChatPrint("People not evacuated...") end
+		end
+		
+		wait_muth = CurTime() + 1
+	end
+
 	for k, v in pairs(player.GetAll()) do
 		-- Rotate left
 		if v:KeyDown(IN_MOVELEFT) and v:IsOnGround() then
@@ -158,35 +222,9 @@ function GM:Think()
 
 	net.Receive("pointshop_toserv", pshop_handler) 
 	net.Receive("change_class", function(ln, ply) local n = net.ReadFloat() ply:SetClass(n) ply:Spawn() end)
-	
-	--Start round
-	if ROUND_SETTIME <= 6 and not IS_ROUND_STARTED then
-		for k, v in pairs(player.GetAll()) do 
-			v:SendLua("surface.PlaySound('music/ravenholm_1.mp3')") 
-		end
-		
-		umsg.Start("notify_muth")
-			umsg.String("ROUND STARTED!!!")
-		umsg.End()
-		
-		--Spawn random mutants
-		if #player.GetAll() > 1 then
-			local numofneeded = math.Clamp(math.random(2), #player.GetAll())
-			
-			for I = 1, math.random(numofneeded) do
-				local p = math.random(#player.GetAll())
-				
-				if IsValid(player.GetAll()[p]) then
-					player.GetAll()[p]:SetTeam(TEAM_MUTANTS)
-					timer.Simple(0.1, function() if IsValid(player.GetAll()[p]) then player.GetAll()[p]:Spawn() end end)
-				end
-			end
-		end
-		
-		IS_ROUND_STARTED = true
-		SetGlobalBool("round_started", IS_ROUND_STARTED)
-	end
 end
+
+
 
 function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	ply:UnSpectate()
@@ -195,6 +233,8 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	ply:ShouldDropWeapon(false)
 	ply:StripWeapons()
 	ply:RemoveAllAmmo()
+	ply:SetJumpPower(170)
+	ply:SetColor(Color(255, 255, 255))
 	
 	timer.Stop("kill_" .. ply:EntIndex())
 	
@@ -204,7 +244,7 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		ply:SetTeam(TEAM_MUTANTS)
 	end
 	
-	timer.Simple(0.06, function()
+	timer.Simple(0.2, function()
 		if not IS_ROUND_STARTED and ply:GetClassString() == "NoCLS" then
 			spectator_handler(ply)
 			
@@ -220,8 +260,6 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		if ply:Team() == TEAM_SPECTATOR then
 			ply:KillSilent()
 		elseif ply:Team() == TEAM_HUMANS then
-			ply:SetJumpPower(170)
-		
 			ply:SetMoney(150)
 			
 			if ply:GetClassString() == "Engineer" then
@@ -273,25 +311,51 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 			
 			ply:SetupHands()
 		elseif ply:Team() == TEAM_MUTANTS then
-			ply:SetClass(math.random(1, 5))
+			ply:SetClass(math.random(1, 4))
+
+			if math.random(1, 70) == 40 then ply:SetClass(5) end
 			
-			timer.Create("spawn_set_up_" .. ply:EntIndex(), 0.15, 1, function()
+			timer.Create("spawn_set_up_" .. ply:EntIndex(), 0.35, 1, function()
 				if IsValid(ply) then
-					ply:SetHealth(3200)
-					ply:SetMaxHealth(3200)
-					ply:SetWalkSpeed(255)
-					ply:SetRunSpeed(255)
+					local pos
+					local ent
+					
+					if not radio_spawn[game.GetMap()] then pos = Vector(0, 0, 0) else pos = radio_spawn[game.GetMap()] end
+					
+					local vec = pos + (VectorRand() * math.random(150, 280))
+					vec.z = pos.z + 1
+					
+					for k, v in pairs(ents.FindByClass("ent_radio_muth")) do ent = v break end
+					
+					local tr = util.TraceLine {
+						start = pos + Vector(0, 0, 6),
+						endpos = vec,
+						filter = ent
+					}
+						
+					timer.Simple(0.035, function() if IsValid(ply) then ply:SetPos(tr.HitPos - (tr.HitNormal * 20)) end end)
 				
-					ply:SetModel(player_manager.TranslatePlayerModel("charple"))
+					ply:SetHealth(1000)
+					ply:SetMaxHealth(3200)
+					ply:SetWalkSpeed(265)
+					ply:SetRunSpeed(265)
+					ply:ChatPrint("F - mutant vision")
+				
+					ply:SetModel(player_manager.TranslatePlayerModel("corpse"))
 					ply:Give("weapon_mutant_gm")
 					
-					if ply:GetClassString() == "Runner" then
-						ply:SetWalkSpeed(290)
-						ply:SetRunSpeed(290)
+					if ply:GetClassString() == "Faster" then
+						ply:SetJumpPower(450)
+						ply:SetWalkSpeed(295)
+						ply:SetRunSpeed(295)
+						ply:SetHealth(800)
+						//ply:SetModel("models/player/Zombiefast.mdl")
 					end
 					
-					if ply:GetClassString() == "Jumper" then
-						ply:SetJumpPower(450)
+					if ply:GetClassString() == "The child of darkness" then
+						ply:SetHealth(2000)
+						ply:SetModelScale(1.6, 0)
+						ply:SetModel(player_manager.TranslatePlayerModel("charple"))
 					end
 					
 					ply:ChatPrint("Your class is " .. string.lower(ply:GetClassString()))
@@ -300,6 +364,8 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		end
 	end)
 end
+
+
 
 function GM:PlayerDeathThink(ply) //no spawn
 	if ply:Team() != TEAM_SPECTATOR then return end
@@ -320,7 +386,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		
 		-- Mutant's damage
 		if attacker:IsPlayer() and attacker:Team() == TEAM_MUTANTS then
-			if math.random(1, 100) == 50 then
+			if math.random(1, 50) == 25 then
 				local time = math.random(50, 70)
 			
 				ent:SetColor(Color(100, 200, 100))
@@ -333,7 +399,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 				end)
 			end
 			
-			if attacker:GetClassString() == "Berserk" then
+			if attacker:GetClassString() == "Berserk" or attacker:GetClassStirng() == "The child of darkness" then
 				dmginfo:SetDamage(dmginfo:GetDamage() + 150)
 			end	
 			
@@ -348,6 +414,8 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		
 		-- Human's damage
 		if attacker:IsPlayer() and attacker:Team() == TEAM_HUMANS then 
+			dmginfo:SetDamage(dmginfo:GetDamage() / 3)
+		
 			if attacker:GetClassString() == "Medic" then
 				dmginfo:SetDamage(dmginfo:GetDamage() - 15)
 			elseif attacker:GetClassString() == "Heavy soldier" then
@@ -372,6 +440,8 @@ function GM:DoPlayerDeath(ply)
 	end)
 end
 
+
+--Handlers
 
 function spectator_handler(ply)
 	if ply:IsBot() then //go away bots

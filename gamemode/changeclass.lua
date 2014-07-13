@@ -15,7 +15,7 @@ function open_ChangeCls()
 	end
 	win:MakePopup()
 	
-	timer.Simple(20, function()
+	timer.Simple(12, function()
 		if win and IsValid(win) then win:Close() else return end
 	
 		LocalPlayer():ChatPrint("Your class is heavy now")

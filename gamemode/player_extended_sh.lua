@@ -27,16 +27,16 @@ function meta:GetClassString()
 			return "NoCLS"
 		end
 	elseif self:Team() == TEAM_MUTANTS then
-		if self:GetDTInt(2) == CLASS_MUTANTS_JUMPER then
-			return "Jumper"
-		elseif self:GetDTInt(2) == CLASS_MUTANTS_RUNNER then
-			return "Runner"
+		if self:GetDTInt(2) == CLASS_MUTANTS_FASTER then
+			return "Faster"
 		elseif self:GetDTInt(2) == CLASS_MUTANTS_BERSERK then
 			return "Berserk"
 		elseif self:GetDTInt(2) == CLASS_MUTANTS_STALKER then
 			return "Stalker"
 		elseif self:GetDTInt(2) == CLASS_MUTANTS_NORMAL then
 			return "Zombie"
+		elseif self:GetDTInt(2) == CLASS_MUTANTS_DARK then
+			return "The child of darkness"
 		else
 			return "NoCLS"
 		end

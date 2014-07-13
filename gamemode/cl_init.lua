@@ -5,6 +5,8 @@ local hud = { "CHudHealth", "CHudBattery", "CHudSecondaryAmmo", "CHudAmmo", "CHu
 local zvision = false
 local wait = 0
 local waitp = 0
+local cantuse = false
+pnv_life = 20
 
 local emitter = ParticleEmitter(Vector(0, 0, 0))
 
@@ -16,12 +18,34 @@ function GM:HUDShouldDraw(name)
 	return true
 end
 
+function GM:PlayerSpawn(ply)
+	ply.PRINTED = false
+end
+
 function GM:Think()
+	for k, v in pairs(ents.FindInSphere(GetGlobalVector("evacuation_zone"), 1200)) do
+		if GetGlobalBool("radio_clk") and v:IsPlayer() and v:Team() == TEAM_HUMANS and not v.PRINTED then v:ChatPrint("Don't leave this place!") v.PRINTED = true end
+	end
+	
+	if LocalPlayer():Team() == TEAM_MUTANTS and input.IsKeyDown(KEY_F) and CurTime() > wait then
+		LocalPlayer().zvision = !LocalPlayer().zvision
+		wait = CurTime() + 0.5
+		surface.PlaySound("npc/zombie/zombie_alert2.wav")
+	end
+	
+	if LocalPlayer():Team() == TEAM_HUMANS and input.IsKeyDown(KEY_F) and CurTime() > wait and pnv_life > 0 then
+		LocalPlayer().hvision = !LocalPlayer().hvision
+		
+		LocalPlayer():EmitSound("npc/turret_floor/deploy.wav", 50, 150)
+		
+		wait = CurTime() + 0.5
+	end
+
 	if LocalPlayer():Team() == TEAM_MUTANTS and LocalPlayer().zvision then
 		local dlight = DynamicLight(LocalPlayer():EntIndex())
 		dlight.Pos = LocalPlayer():GetPos()
-		dlight.r = 50
-		dlight.g = 255
+		dlight.r = 255
+		dlight.g = 50
 		dlight.b = 50
 		dlight.Brightness = 1
 		dlight.Size = 99999
@@ -30,9 +54,29 @@ function GM:Think()
 		dlight.Style = 0
 	end
 	
+	if LocalPlayer():Team() == TEAM_HUMANS then
+		if LocalPlayer().hvision then
+			local dlight = DynamicLight(LocalPlayer():EntIndex())
+			dlight.Pos = LocalPlayer():GetPos()
+			dlight.r = 0
+			dlight.g = 255
+			dlight.b = 0
+			dlight.Brightness = 0
+			dlight.Size = 999
+			dlight.Decay = 0.1
+			dlight.DieTime = CurTime() + 0.1
+			dlight.Style = 0
+			
+			if pnv_life > 0 then pnv_life = pnv_life - 0.01 end
+			if pnv_life <= 0 then LocalPlayer().hvision = false end
+		else
+			if pnv_life < 20 then pnv_life = pnv_life + 0.01 end
+		end
+	end
+	
 	if CurTime() > waitp and LocalPlayer():Team() == TEAM_MUTANTS then
 		for k, v in pairs(team.GetPlayers(TEAM_HUMANS)) do
-			local p = emitter:Add("sprites/blueglow2", v:GetPos() + Vector(0, 0, 10))
+			local p = emitter:Add("sprites/redglow1", v:GetPos() + Vector(0, 0, 10))
 
 			p:SetDieTime(10)
 			p:SetStartAlpha(255)
@@ -51,10 +95,6 @@ function GM:Think()
 end
 
 function GM:KeyPress()
-	if LocalPlayer():Team() == TEAM_MUTANTS and LocalPlayer():KeyPressed(IN_ATTACK2) and CurTime() > wait then
-		LocalPlayer().zvision = !LocalPlayer().zvision
-		wait = CurTime() + 0.5
-	end
 end
 
 function GM:ContextMenuOpen()

@@ -30,12 +30,50 @@ CLASS_HUMANS_BERSERK = 3
 CLASS_HUMANS_ENGINEER = 4
 CLASS_HUMANS_HEAVYS = 5
 
-CLASS_MUTANTS_JUMPER = 1
-CLASS_MUTANTS_RUNNER = 2
-CLASS_MUTANTS_BERSERK = 3
-CLASS_MUTANTS_STALKER = 4
-CLASS_MUTANTS_NORMAL = 5
+CLASS_MUTANTS_FASTER = 1
+CLASS_MUTANTS_BERSERK = 2
+CLASS_MUTANTS_STALKER = 3
+CLASS_MUTANTS_NORMAL = 4
+CLASS_MUTANTS_DARK = 5
+
+random_evacuation = {
+	["gm_construct"] = {
+		[1] = Vector(1123.0928955078, 5691.1801757813, -31.96875),
+		[2] = Vector(-4292.921875, 3547.5361328125, -100.99945831299),
+		[3] = Vector(-322.11758422852, -1292.7222900391, -143.96875)
+	},
+	
+	["gm_bigcity"] = {
+		[1] = Vector(0, 0, 0),
+		[2] = Vector(0, 0, 0),
+		[3] = Vector(0, 0, 0)
+	},
+	
+	["gm_flatgrass"] = {
+		[1] = Vector(0, 0, 0),
+		[2] = Vector(0, 0, 0),
+		[3] = Vector(0, 0, 0)
+	}
+}
+
+map_coordinates = {
+	["gm_construct"] = { 
+		radio_spawn = Vector(-4187.1948242188, -1833.9692382813, -143.96875), 
+		pointshop_spawn = Vector(523.30065917969, -102.16304016113, -148.40969848633) 
+	},
+	
+	["gm_bigcity"] = { 
+		radio_spawn = Vector(-1420.9265136719, 4894.9672851563, -11135.96875), 
+		pointshop_spawn = Vector(0, 0, 0) 
+	}
+}
 
 team.SetUp(TEAM_HUMANS, "Humans", Color(0, 0, 255))
 team.SetUp(TEAM_MUTANTS, "Mutants", Color(255, 0, 0))
-team.SetUp(TEAM_MUTANTS, "Spectator", Color(255, 255, 255))
+team.SetUp(TEAM_SPECTATOR, "Spectator", Color(0, 255, 0))
+
+
+
+
+
+

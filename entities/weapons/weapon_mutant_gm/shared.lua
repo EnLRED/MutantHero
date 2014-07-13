@@ -6,7 +6,7 @@ SWEP.PrintName = "Mutant"
 SWEP.ViewModelFOV = 70
 SWEP.DrawCrosshair = false 
 
-SWEP.ViewModel = Model("models/Weapons/v_zombiearms.mdl")
+SWEP.ViewModel = "models/Weapons/v_zombiearms.mdl"
 SWEP.WorldModel = ""
 
 SWEP.ShowViewModel = true
@@ -30,7 +30,7 @@ function SWEP:PrimaryAttack()
 	self.Weapon:SendWeaponAnim(ACT_VM_HITCENTER)
 	self.Owner:SetAnimation(PLAYER_ATTACK1)
 	
-	timer.Simple(0.45, function()
+	timer.Simple(0.4, function()
 	if not IsValid(self) or not IsValid(self.Owner) then return end
 	
 	pos = self.Owner:GetShootPos()
@@ -52,7 +52,7 @@ function SWEP:PrimaryAttack()
 				
 				self.Owner:EmitSound("npc/zombie/claw_strike" .. math.random(3) .. ".wav")
 				
-				if targ:IsPlayer() then
+				//if targ:IsPlayer() then
 					local dmg = DamageInfo()
 					dmg:SetDamage(math.random(200, 250))
 					dmg:SetDamageType(DMG_SLASH)
@@ -61,11 +61,13 @@ function SWEP:PrimaryAttack()
 					dmg:SetDamageForce(Vector(300, 300, 300))
 					
 					self.Weapon:EmitSound("")
+					
+					self.Owner:EmitSound("npc/zombie/zombie_die" .. math.random(1, 3) .. ".wav")
 						
 					if SERVER then 
 						targ:TakeDamageInfo(dmg) 
 					end
-				end
+				//end
 			else
 				self.Owner:EmitSound("npc/zombie/claw_miss" .. math.random(2) .. ".wav")
 			end

@@ -59,7 +59,6 @@ function SWEP:PrimaryAttack()
     bullet.Src = self.Owner:GetShootPos()
     bullet.Dir = self.Owner:GetAimVector()
     bullet.Spread = self.Spread
-	bullet.Force = 0
     bullet.Tracer = 1
 	bullet.Damage = self.Primary.Damage
 	
