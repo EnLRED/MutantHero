@@ -32,27 +32,32 @@ CLASS_HUMANS_HEAVYS = 5
 
 CLASS_MUTANTS_FASTER = 1
 CLASS_MUTANTS_BERSERK = 2
-CLASS_MUTANTS_STALKER = 3
-CLASS_MUTANTS_NORMAL = 4
-CLASS_MUTANTS_DARK = 5
+CLASS_MUTANTS_NORMAL = 3
+CLASS_MUTANTS_DARK = 4
 
 random_evacuation = {
 	["gm_construct"] = {
-		[1] = Vector(1123.0928955078, 5691.1801757813, -31.96875),
-		[2] = Vector(-4292.921875, 3547.5361328125, -100.99945831299),
-		[3] = Vector(-322.11758422852, -1292.7222900391, -143.96875)
+		[1] = Vector(-2958.9360351563, -1435.1108398438, 240.03125),
+		[2] = Vector(-1228.9128417969, -2790.0529785156, 258.07858276367),
+		[3] = Vector(-4590.8208007813, -3048.0549316406, 250),
+		[4] = Vector(-649.92492675781, -1485.2258300781, -143.96875),
+		[5] = Vector(-1896.8890380859, -15.099151611328, -148.00018310547)
 	},
 	
 	["gm_bigcity"] = {
 		[1] = Vector(0, 0, 0),
 		[2] = Vector(0, 0, 0),
-		[3] = Vector(0, 0, 0)
+		[3] = Vector(0, 0, 0),
+		[4] = Vector(0, 0, 0),
+		[5] = Vector(0, 0, 0)
 	},
 	
 	["gm_flatgrass"] = {
 		[1] = Vector(0, 0, 0),
 		[2] = Vector(0, 0, 0),
-		[3] = Vector(0, 0, 0)
+		[3] = Vector(0, 0, 0),
+		[4] = Vector(0, 0, 0),
+		[5] = Vector(0, 0, 0)
 	}
 }
 

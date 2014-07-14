@@ -27,9 +27,9 @@ SWEP.Primary.Delay         = 0.1
 SWEP.Primary.Ammo          = "smg1"
 SWEP.Primary.Automatic     = true
 SWEP.Primary.Sound         = Sound("Weapon_M249.Single")
-SWEP.Primary.Damage        = 120
+SWEP.Primary.Damage        = 110
 
 --self.View = Angle(math.Rand(-3, 0), math.Rand(-0.5, 0.5), 0)
 SWEP.Spread = Vector(0.07, 0.07, 0.08)
 
-if CLIENT then SWEP.Cost = 70 end
+if CLIENT then SWEP.Cost = 155 end

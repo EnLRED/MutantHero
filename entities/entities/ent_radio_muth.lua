@@ -20,6 +20,7 @@ function ENT:Initialize()
 	self:SetSolid(SOLID_VPHYSICS)
 	self:PhysicsInit(SOLID_VPHYSICS)
 	self:SetNWBool("made_by_people_muth", true)
+	self:SetNWFloat("count_clk", 0)
 	
 	local phys = self:GetPhysicsObject()
 	
@@ -29,17 +30,17 @@ end
 function ENT:Think()
 	if CLIENT then return end
 	
-	if self.Wait > 0 then self.Wait = self.Wait - 0.5 end
+	if self.Wait > 0 then self:SetNWFloat("count_clk", self.Wait) self.Wait = self.Wait - 0.5 end
 	
 	for k, v in pairs(ents.FindInSphere(self:GetPos(), 150)) do
 		if GetGlobalBool("radio_clk") then return end
 
-		if v:IsPlayer() and v:Team() == TEAM_HUMANS	 then
+		if v:IsPlayer() and v:Team() == TEAM_HUMANS then
 			if v:GetEyeTrace().Entity == self then
 				if v:KeyDown(IN_USE) then
 					self.Wait = self.Wait + 1
 				
-					if self.Wait >= 5 then
+					if self.Wait >= 9 then
 						SetGlobalBool("radio_clk", true)
 						
 						for k, v in pairs(player.GetAll()) do

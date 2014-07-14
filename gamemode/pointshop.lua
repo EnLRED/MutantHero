@@ -102,12 +102,7 @@ local function open_Shop()
 				net.SendToServer()
 				
 				local NO_ACCES = false
-
-				net.Receive("froms_toclient_check", function()
-					local str = net.ReadString()
-					
-					if str != "[NULL Entity]" then NO_ACCES = true end
-				end)
+				if LocalPlayer():HasWeapon(tobuy.ClassName) then return end
 				
 				timer.Simple(0.01, function()
 					if NO_ACCES then return end

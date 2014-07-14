@@ -52,22 +52,22 @@ function SWEP:PrimaryAttack()
 				
 				self.Owner:EmitSound("npc/zombie/claw_strike" .. math.random(3) .. ".wav")
 				
-				//if targ:IsPlayer() then
-					local dmg = DamageInfo()
-					dmg:SetDamage(math.random(200, 250))
-					dmg:SetDamageType(DMG_SLASH)
-					dmg:SetAttacker(self.Owner)
-					dmg:SetInflictor(self.Weapon)
-					dmg:SetDamageForce(Vector(300, 300, 300))
+				if targ:IsPlayer() and targ:Team() == TEAM_MUTANTS then return end
+				
+				local dmg = DamageInfo()
+				dmg:SetDamage(250)
+				dmg:SetDamageType(DMG_SLASH)
+				dmg:SetAttacker(self.Owner)
+				dmg:SetInflictor(self.Weapon)
+				dmg:SetDamageForce(Vector(300, 300, 300))
 					
-					self.Weapon:EmitSound("")
+				self.Weapon:EmitSound("")
 					
-					self.Owner:EmitSound("npc/zombie/zombie_die" .. math.random(1, 3) .. ".wav")
+				self.Owner:EmitSound("npc/zombie/zombie_die" .. math.random(1, 3) .. ".wav")
 						
-					if SERVER then 
-						targ:TakeDamageInfo(dmg) 
-					end
-				//end
+				if SERVER then 
+					targ:TakeDamageInfo(dmg) 
+				end
 			else
 				self.Owner:EmitSound("npc/zombie/claw_miss" .. math.random(2) .. ".wav")
 			end

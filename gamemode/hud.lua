@@ -148,6 +148,7 @@ function GM:HUDPaint()
 	draw.DrawText(LocalPlayer():Armor() .. " Armor", "mutanthero_font1", sh / 18, sw / 2.12, Color(255, 255, 255))
 	
 	surface.DrawCircle((sw / 2) - 0.4, sh / 2, sh / 70, Color(255, 255, 255))
+	surface.DrawCircle((sw / 2) - 0.4, sh / 2, sh / 650, Color(255, 0, 0))
 	
 	//------------------------------------------------------------lal-----------------\\
 	
@@ -167,6 +168,8 @@ function GM:HUDPaint()
 				end
 			end
 		end
+		
+		draw.DrawText("You killed " .. LocalPlayer():GetNWFloat("killed_muth") .. " mutants", "mutanthero_font1", sh / 3, sw / 1.96, Color(255, 255, 255, 150))
 		
 		surface.SetDrawColor(Color(0, 150, 0))
 		surface.DrawRect(ScrW() / 13, 11, pnv_life * 6, 20)
@@ -192,22 +195,22 @@ function GM:HUDPaint()
 	
 	local ent = LocalPlayer():GetEyeTrace().Entity
 	
-	if ent:GetNWBool("is_pointshop") and ent:GetPos():Distance(LocalPlayer():GetPos()) <= 200 then
+	if IsValid(ent) and ent:GetNWBool("is_pointshop") and ent:GetPos():Distance(LocalPlayer():GetPos()) <= 200 then
 		local pos = ent:GetPos():ToScreen()
 		
 		draw.DrawText("[E]\nHP: " .. ent:Health(), "mutanthero_font2", pos.x, pos.y, Color(255, 255, 255), TEXT_ALIGN_CENTER)
 	end
 	
-	if ent:IsPlayer() and ent:Team() == LocalPlayer():Team() then
+	if IsValid(ent) and ent:IsPlayer() and ent:Team() == LocalPlayer():Team() then
 		local pos = (ent:GetPos() + Vector(0, 0, 40)):ToScreen()
 	
-		draw.DrawText(ent:Nick(), "mutanthero_smallf", pos.x, pos.y, Color(255, 255, 255), TEXT_ALIGN_CENTER)
+		draw.DrawText(ent:Nick() .. "\nClass: " .. string.lower(ent:GetClassString()) .. "\nHP: " .. ent:Health(), "mutanthero_smallf", pos.x, pos.y, Color(255, 255, 255), TEXT_ALIGN_CENTER)
 	end
 	
-	if ent:GetClass() == "ent_radio_muth" and ent:GetPos():Distance(LocalPlayer():GetPos()) <= 200 then
+	if IsValid(ent) and ent:GetClass() == "ent_radio_muth" and ent:GetPos():Distance(LocalPlayer():GetPos()) <= 200 then
 		local pos = ent:GetPos():ToScreen()
 		
-		draw.DrawText("Hold [E]", "mutanthero_font2", pos.x, pos.y, Color(255, 255, 255), TEXT_ALIGN_CENTER)
+		draw.DrawText("Hold [E]\nCount: " .. math.Round(ent:GetNWFloat("count_clk")), "mutanthero_font2", pos.x, pos.y, Color(255, 255, 255), TEXT_ALIGN_CENTER)
 	end
 	
 	

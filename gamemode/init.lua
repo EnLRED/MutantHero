@@ -14,12 +14,6 @@ local time_pause = 15 //pause time
 ROUND_TIME_SECS = 180
 IS_ROUND_STARTED = false
 
-local radio_spawn = {
-	["gm_construct"] = Vector(-4187.1948242188, -1833.9692382813, -143.96875),
-	["gm_flatgrass"] = Vector(0, 0, 0),
-	["gm_bigcity"] = Vector(-1420.9265136719, 4894.9672851563, -11135.96875)
-}
-
 local Models = {
 	"models/player/zombie_fast.mdl",
 	"models/player/charple.mdl"
@@ -28,6 +22,7 @@ local Models = {
 util.AddNetworkString("pointshop_toserv")
 util.AddNetworkString("froms_toclient_check")
 util.AddNetworkString("change_class")
+util.AddNetworkString("drop_weapon_muth")
 
 function GM:Initialize() --stuff trash scrap
 	util.PrecacheSound("npc/stalker/stalker_scream1.wav")
@@ -61,13 +56,14 @@ function GM:RestartRound(whoWin) //1 - humans, 0 - mutants
 		note = "MUTANTS WIN!!!" 
 		str = "surface.PlaySound('music/radio1.mp3')" 
 	end
+	
 	for k, v in pairs(player.GetAll()) do v:SetClass(0) v:SendLua(str) v:ChatPrint(note .. " Restarting round...") end
 	
 	umsg.Start("notify_muth")
 		umsg.String(note .. " Restarting round...")
 	umsg.End()
 	
-	timer.Simple(4, function() 
+	timer.Simple(7, function() 
 		for k, v in pairs(ents.GetAll()) do
 			if v:GetNWBool("made_by_people_muth") then v:Remove() end
 		end
@@ -90,7 +86,7 @@ function GM:InitPostEntity()
 	SetGlobalBool("round_started", IS_ROUND_STARTED) --not stuffff
 	SetGlobalBool("radio_clk", false) --stufffff
 	
-	SetGlobalVector("evacuation_zone", random_evacuation[game.GetMap()][math.random(1, 3)])
+	SetGlobalVector("evacuation_zone", random_evacuation[game.GetMap()][math.random(1, 5)])
 
 	timer.Create("count_round_start", 1, time_pause, function() --stufffffffff
 		SetGlobalInt("timetostart", GetGlobalInt("timetostart") - 1)
@@ -153,6 +149,8 @@ function GM:PlayerDeath(victim, inflictor, attacker)
 		
 		if attacker:Team() == TEAM_HUMANS then
 			local str = "+0$"
+			
+			attacker:SetNWFloat("killed_muth", attacker:GetNWFloat("killed_muth") + 1)
 		
 			--Monneeeey $
 			if victim:GetClassString() == "Faster" or victim:GetClassString() == "Berserk" then
@@ -176,6 +174,8 @@ function GM:PlayerDeath(victim, inflictor, attacker)
 		--Mutants win
 		if #team.GetPlayers(TEAM_HUMANS) <= 0 then
 			self:RestartRound(false)
+			
+			for k, v in pairs(team.GetPlayers(TEAM_MUTANTS)) do v.WinRound_Mutant = true end
 		end
 	end)
 	
@@ -183,6 +183,12 @@ function GM:PlayerDeath(victim, inflictor, attacker)
 end
 
 local wait_muth = 0
+
+function GM:CanPlayerSuicide(ply)
+	ply:PrintMessage(HUD_PRINTTALK, "You can't suicide!")
+	
+	return false
+end
 
 function GM:Think()
 	if ROUND_TIME_SECS <= 1 and CurTime() > wait_muth then
@@ -194,6 +200,7 @@ function GM:Think()
 		for k, v in pairs(ents.FindInSphere(rad, 1200)) do
 			if v:IsPlayer() and v:Team() == TEAM_HUMANS then
 				count = count + 1
+				v.WinRound_Human = true
 			end
 		end
 		
@@ -224,8 +231,6 @@ function GM:Think()
 	net.Receive("change_class", function(ln, ply) local n = net.ReadFloat() ply:SetClass(n) ply:Spawn() end)
 end
 
-
-
 function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	ply:UnSpectate()
 	ply:DrawWorldModel(true)
@@ -235,6 +240,8 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 	ply:RemoveAllAmmo()
 	ply:SetJumpPower(170)
 	ply:SetColor(Color(255, 255, 255))
+	
+	ply:SetNWFloat("killed_muth", 0)
 	
 	timer.Stop("kill_" .. ply:EntIndex())
 	
@@ -260,67 +267,67 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 		if ply:Team() == TEAM_SPECTATOR then
 			ply:KillSilent()
 		elseif ply:Team() == TEAM_HUMANS then
-			ply:SetMoney(150)
+			local money = 150
+			
+			if ply.WinRound_Human then umsg.Start("notify_muth", ply) umsg.String("You got +30$ money bonus") umsg.End() ply:ChatPrint("You got +30$ money bonus") money = 180 end
+		
+			ply:SetMoney(money)
+			
+			ply.WinRound_Human = false
+			
+			ply:Give("weapon_muth_knife")
+			
+			ply:SetWalkSpeed(ply:GetClassTable().speed)
+			ply:SetRunSpeed(ply:GetClassTable().speed)
+			ply:SetJumpPower(ply:GetClassTable().jumpp)
+			ply:SetHealth(ply:GetClassTable().health)
+			
+			local Pistols = {}
+			
+			for k, v in pairs(weapons.GetList()) do
+				if v.IsPistol_muth then
+					table.insert(Pistols, v)
+				end
+			end
+			
+			ply:Give(table.Random(Pistols).ClassName)
+			
+			ply:SetModel(player_manager.TranslatePlayerModel(ply:GetClassTable().model))
 			
 			if ply:GetClassString() == "Engineer" then
-				ply:SetModel(player_manager.TranslatePlayerModel("eli"))
-				ply:SetWalkSpeed(240)
-				ply:SetHealth(700)
-				ply:SetRunSpeed(240)
-				ply:SetMaxHealth(700)
 				ply:Give("weapon_muth_turret")
 				ply:Give("weapon_muth_beacon")
 			end
 			
 			if ply:GetClassString() == "Medic" then
-				ply:SetModel(player_manager.TranslatePlayerModel("alyx"))
 				ply:Give("weapon_muth_medkit")
 				ply:Give("weapon_muth_antidote")
-				ply:SetWalkSpeed(240)
-				ply:SetRunSpeed(240)
-				ply:SetHealth(750)
-				ply:SetMaxHealth(750)
 			end
 			
 			if ply:GetClassString() == "Berserk" then
-				ply:SetModel(player_manager.TranslatePlayerModel("odessa"))
-				ply:SetWalkSpeed(245)
-				ply:SetHealth(850)
-				ply:SetMaxHealth(850)
-				ply:SetRunSpeed(245)
 				ply:Give("weapon_hook_muth")
 			end
 			
 			if ply:GetClassString() == "Heavy soldier" then
-				ply:SetModel(player_manager.TranslatePlayerModel("male18"))
-				ply:SetWalkSpeed(210)
 				ply:Give("weapon_muth_ak47")
-				ply:SetHealth(1100)
-				ply:SetMaxHealth(1100)
-				ply:SetRunSpeed(210)
 			end
 			
 			if ply:GetClassString() == "Light soldier" then
-				ply:SetModel(player_manager.TranslatePlayerModel("male11"))
-				ply:SetWalkSpeed(240)
-				ply:SetHealth(700)
-				ply:SetMaxHealth(700)
 				ply:Give("weapon_muth_mp5")
-				ply:SetRunSpeed(240)
 			end
 			
 			ply:SetupHands()
 		elseif ply:Team() == TEAM_MUTANTS then
-			ply:SetClass(math.random(1, 4))
+			ply:SetClass(math.random(1, 3))
 
-			if math.random(1, 70) == 40 then ply:SetClass(5) end
+			if math.random(1, 70) == 40 then ply:SetClass(CLASS_MUTANTS_DARK) end
 			
 			timer.Create("spawn_set_up_" .. ply:EntIndex(), 0.35, 1, function()
 				if IsValid(ply) then
 					local pos
 					local ent
 					
-					if not radio_spawn[game.GetMap()] then pos = Vector(0, 0, 0) else pos = radio_spawn[game.GetMap()] end
+					if not map_coordinates[game.GetMap()].radio_spawn then pos = Vector(0, 0, 0) else pos = map_coordinates[game.GetMap()].radio_spawn end
 					
 					local vec = pos + (VectorRand() * math.random(150, 280))
 					vec.z = pos.z + 1
@@ -333,30 +340,24 @@ function GM:PlayerSpawn(ply) --COMMMMMMMIT
 						filter = ent
 					}
 						
-					timer.Simple(0.035, function() if IsValid(ply) then ply:SetPos(tr.HitPos - (tr.HitNormal * 20)) end end)
+					timer.Simple(0.06, function() if IsValid(ply) then ply:SetPos(tr.HitPos - (tr.HitNormal * 20)) end end)
 				
-					ply:SetHealth(1000)
-					ply:SetMaxHealth(3200)
-					ply:SetWalkSpeed(265)
-					ply:SetRunSpeed(265)
+					local bonus = 0
+					
+					if ply.WinRound_Mutant then umsg.Start("notify_muth", ply) umsg.String("You got +100 health bonus") umsg.End() ply:ChatPrint("You got +100 health bonus") bonus = 100 end
+					
+					ply.WinRound_Human = false
+					ply.WinRound_Mutant = false
+				
+					ply:SetWalkSpeed(ply:GetClassTable().speed)
+					ply:SetRunSpeed(ply:GetClassTable().speed)
+					ply:SetJumpPower(ply:GetClassTable().jumpp)
+					ply:SetHealth(ply:GetClassTable().health + bonus)
+					
 					ply:ChatPrint("F - mutant vision")
 				
-					ply:SetModel(player_manager.TranslatePlayerModel("corpse"))
+					ply:SetModel(player_manager.TranslatePlayerModel(ply:GetClassTable().model))
 					ply:Give("weapon_mutant_gm")
-					
-					if ply:GetClassString() == "Faster" then
-						ply:SetJumpPower(450)
-						ply:SetWalkSpeed(295)
-						ply:SetRunSpeed(295)
-						ply:SetHealth(800)
-						//ply:SetModel("models/player/Zombiefast.mdl")
-					end
-					
-					if ply:GetClassString() == "The child of darkness" then
-						ply:SetHealth(2000)
-						ply:SetModelScale(1.6, 0)
-						ply:SetModel(player_manager.TranslatePlayerModel("charple"))
-					end
 					
 					ply:ChatPrint("Your class is " .. string.lower(ply:GetClassString()))
 				end
@@ -386,21 +387,21 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		
 		-- Mutant's damage
 		if attacker:IsPlayer() and attacker:Team() == TEAM_MUTANTS then
-			if math.random(1, 50) == 25 then
+			if ent:IsPlayer() and ent:Team() == TEAM_HUMANS and math.random(1, 30) == 25 then
 				local time = math.random(50, 70)
 			
-				ent:SetColor(Color(100, 200, 100))
+				ent:SetColor(Color(150, 200, 150))
 				ent:ChatPrint("You have been infected. You have " .. time .. " to have antidote")
 				
 				timer.Create("kill_" .. ent:EntIndex(), time, 1, function()
-					if IsValid(ent) and ent:Team() == TEAM_HUMANS then
+					if IsValid(ent) then
 						ent:Kill()
 					end
 				end)
 			end
 			
-			if attacker:GetClassString() == "Berserk" or attacker:GetClassStirng() == "The child of darkness" then
-				dmginfo:SetDamage(dmginfo:GetDamage() + 150)
+			if attacker:GetClassString() == "Berserk" or attacker:GetClassString() == "The child of darkness" then
+				dmginfo:SetDamage(dmginfo:GetDamage() + 250)
 			end	
 			
 			if attacker:GetClassString() == "Runner" then
@@ -409,7 +410,7 @@ function GM:EntityTakeDamage(ent, dmginfo)
 		end
 	
 		if attacker:IsNPC() and attacker:GetClass() == "npc_turret_floor" then
-			dmginfo:SetDamage(dmginfo:GetDamage() * 40)
+			dmginfo:SetDamage(dmginfo:GetDamage() * 16)
 		end
 		
 		-- Human's damage
@@ -433,7 +434,7 @@ function GM:DoPlayerDeath(ply)
 	ply:Spectate(OBS_MODE_ROAMING)
 	ply:KillSilent()
 	
-	timer.Simple(15, function()
+	timer.Simple(13, function()
 		if ply:Alive() then return end
 		
 		ply:Spawn()
@@ -473,11 +474,7 @@ function pshop_handler(ln, ply)
 		if IsAmmo == 1 then
 			ply:GiveAmmo(Num, ClassName, true) 
 		else
-			net.Start("froms_toclient_check")
-				net.WriteString(tostring(ply:GetWeapon(ClassName)))
-			net.Send(ply)
-			
-			if tostring(ply:GetWeapon(ClassName)) != "[NULL Entity]" then ply:ChatPrint("You already have this weapon!") return end
+			if ply:HasWeapon(ClassName) then ply:ChatPrint("You already have this weapon!") return end
 			ply:Give(ClassName)
 			print(ClassName)
 		end
@@ -485,8 +482,6 @@ function pshop_handler(ln, ply)
 		ply:SetMoney(ply:GetMoney() - Cost)
 	end
 end
-
-
 
 
 

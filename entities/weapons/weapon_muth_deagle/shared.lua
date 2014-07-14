@@ -19,17 +19,18 @@ SWEP.DrawAmmo = true
 
 SWEP.Base = "weapon_base_muth"
 
-SWEP.HoldType = "smg"
+SWEP.HoldType = "pistol"
 
+SWEP.IsPistol_muth = true
 SWEP.UseHands              = true
 
-SWEP.Primary.ClipSize      = 6
+SWEP.Primary.ClipSize      = 7
 SWEP.Primary.DefaultClip   = 36
 SWEP.Primary.Delay         = 0.3
 SWEP.Primary.Ammo          = "pistol"
 SWEP.Primary.Automatic     = false
 SWEP.Primary.Sound         = Sound("Weapon_Deagle.Single")
-SWEP.Primary.Damage        = 150
+SWEP.Primary.Damage        = 130
 
 --self.View = Angle(math.Rand(-3, 0), math.Rand(-0.5, 0.5), 0)
 SWEP.Spread = Vector(0.01, 0.01, 0.01)

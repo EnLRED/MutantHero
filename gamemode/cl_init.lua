@@ -5,7 +5,7 @@ local hud = { "CHudHealth", "CHudBattery", "CHudSecondaryAmmo", "CHudAmmo", "CHu
 local zvision = false
 local wait = 0
 local waitp = 0
-local cantuse = false
+local canUse = true
 pnv_life = 20
 
 local emitter = ParticleEmitter(Vector(0, 0, 0))
@@ -22,21 +22,37 @@ function GM:PlayerSpawn(ply)
 	ply.PRINTED = false
 end
 
+function GM:StartChat(tm)
+	canUse = false
+end
+
+function GM:FinishChat(tm)
+	canUse = true
+end
+
 function GM:Think()
 	for k, v in pairs(ents.FindInSphere(GetGlobalVector("evacuation_zone"), 1200)) do
 		if GetGlobalBool("radio_clk") and v:IsPlayer() and v:Team() == TEAM_HUMANS and not v.PRINTED then v:ChatPrint("Don't leave this place!") v.PRINTED = true end
 	end
 	
-	if LocalPlayer():Team() == TEAM_MUTANTS and input.IsKeyDown(KEY_F) and CurTime() > wait then
+	if LocalPlayer():Team() == TEAM_MUTANTS and input.IsKeyDown(KEY_F) and CurTime() > wait and canUse then
 		LocalPlayer().zvision = !LocalPlayer().zvision
 		wait = CurTime() + 0.5
 		surface.PlaySound("npc/zombie/zombie_alert2.wav")
 	end
 	
-	if LocalPlayer():Team() == TEAM_HUMANS and input.IsKeyDown(KEY_F) and CurTime() > wait and pnv_life > 0 then
+	if LocalPlayer():Team() == TEAM_HUMANS and input.IsKeyDown(KEY_F) and CurTime() > wait and pnv_life > 0 and canUse then
 		LocalPlayer().hvision = !LocalPlayer().hvision
 		
 		LocalPlayer():EmitSound("npc/turret_floor/deploy.wav", 50, 150)
+		
+		wait = CurTime() + 0.5
+	end
+	
+	if LocalPlayer():Team() == TEAM_HUMANS and input.IsKeyDown(KEY_H) and CurTime() > wait then
+		//net.Start("drop_weapon_muth")
+			//net.WriteEntity(LocalPlayer():GetActiveWeapon())
+		//net.SendToServer()
 		
 		wait = CurTime() + 0.5
 	end

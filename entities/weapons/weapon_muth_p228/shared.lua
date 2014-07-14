@@ -19,8 +19,9 @@ SWEP.DrawAmmo = true
 
 SWEP.Base = "weapon_base_muth"
 
-SWEP.HoldType = "smg"
+SWEP.HoldType = "pistol"
 
+SWEP.IsPistol_muth = true
 SWEP.UseHands              = true
 
 SWEP.Primary.ClipSize      = 13

@@ -17,7 +17,7 @@ function ENT:Initialize()
 	self:SetMoveType(MOVETYPE_VPHYSICS)
 	self:SetSolid(SOLID_VPHYSICS)
 	self:PhysicsInit(SOLID_VPHYSICS)
-	self:SetHealth(4000)
+	self:SetHealth(2000)
 	self:SetNWBool("is_pointshop", true)
 	self:SetNWBool("made_by_people_muth", true)
 	
@@ -29,7 +29,13 @@ function ENT:OnTakeDamage(dmg)
 
 	self:TakePhysicsDamage(dmg)
 	self:SetHealth(self:Health() - dmg:GetDamage())
-	if self:Health() <= 0 then self:Remove() end
+	if self:Health() <= 0 then 
+		local ef = EffectData()
+		ef:SetOrigin(self:GetPos())
+		util.Effect("explosion", ef)
+	
+		self:Remove() 
+	end
 end
 
 function ENT:Use(ply)

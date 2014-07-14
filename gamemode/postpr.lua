@@ -15,13 +15,13 @@ local human =
 
 local mutant =
 {
-	["$pp_colour_addr"] = 0.07,
+	["$pp_colour_addr"] = 0.08,
 	["$pp_colour_addg"] = 0,
 	["$pp_colour_addb"] = 0,
 	["$pp_colour_brightness"] = -0.3,
 	["$pp_colour_contrast"] = 1.1,
-	["$pp_colour_colour"] = 0.6,
-	["$pp_colour_mulr"] = 2,
+	["$pp_colour_colour"] = 0.7,
+	["$pp_colour_mulr"] = 3,
 	["$pp_colour_mulg"] = 0,
 	["$pp_colour_mulb"] = 0
 }
@@ -74,8 +74,13 @@ local function drawShit()
 		DrawColorModify(end_r)
 	end)
 	
-	timer.Simple(4, function()
+	hook.Add("HUDShouldDraw", "no_draw_hud", function()
+		return false
+	end)
+	
+	timer.Simple(7, function()
 		hook.Remove("RenderScreenspaceEffects", "draw_end")
+		hook.Remove("HUDShouldDraw", "no_draw_hud")
 	end)
 end
 

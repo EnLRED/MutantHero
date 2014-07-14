@@ -90,4 +90,11 @@ function SWEP:Reload()
 	end
 end
 
+function SWEP:Holster()
+	timer.Destroy("reload_" .. self:EntIndex())
+	timer.Destroy("idle_" .. self:EntIndex())
+	
+	return true
+end
+
 if CLIENT then SWEP.Cost = 50 end

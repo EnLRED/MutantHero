@@ -9,7 +9,7 @@ function notify(data)
 	lab:SetText(str)
 	
 	lab.Think = function()
-		lab:SetAlpha(lab:GetAlpha() - 2)
+		lab:SetAlpha(lab:GetAlpha() - 1.5)
 		local x, y = lab:GetPos()
 		lab:SetPos(x, y - 2)
 		lab:SetColor(Color(0, 255, 0))
