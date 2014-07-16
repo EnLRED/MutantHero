@@ -13,7 +13,7 @@ SWEP.ShowWorldModel = false
 SWEP.DrawAmmo = false
 
 if CLIENT then
-	SWEP.Cost = 70
+	SWEP.Cost = 60
 end
 
 SWEP.HoldType = "knife"
@@ -41,8 +41,10 @@ SWEP.Secondary.Ammo			= "none"
 
 SWEP.UseHands = true
 
+SWEP.IsBuyable = true
+
 function SWEP:PrimaryAttack()
-	self:SetNextPrimaryFire(CurTime() + 20)
+	self:SetNextPrimaryFire(CurTime() + 250)
 	
 	self.Owner:SetPos(self.Owner:GetNWVector("muth_startpoint"))
 	
@@ -51,7 +53,5 @@ function SWEP:PrimaryAttack()
 	local ef = EffectData()
 	ef:SetOrigin(self.Owner:GetPos())
 	util.Effect("effect_teleport_muth", ef)
-	
-	if SERVER then self.Owner:StripWeapon(self.ClassName) end
 end
 

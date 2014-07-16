@@ -1,18 +1,5 @@
 AddCSLuaFile()
 
-local human =
-{
-	["$pp_colour_addr"] = 0,
-	["$pp_colour_addg"] = 0,
-	["$pp_colour_addb"] = 0,
-	["$pp_colour_brightness"] = -0.15,
-	["$pp_colour_contrast"] = 1,
-	["$pp_colour_colour"] = 0.9,
-	["$pp_colour_mulr"] = 0,
-	["$pp_colour_mulg"] = 0,
-	["$pp_colour_mulb"] = 1
-}
-
 local mutant =
 {
 	["$pp_colour_addr"] = 0.08,
@@ -56,7 +43,7 @@ local function drawShit()
 	local br = 0
 
 	hook.Add("RenderScreenspaceEffects", "draw_end", function()
-		if br > -1 then br = br - 0.01 end
+		if br > -1 then br = br - 0.005 end
 	
 		local end_r =
 		{
@@ -78,7 +65,7 @@ local function drawShit()
 		return false
 	end)
 	
-	timer.Simple(7, function()
+	timer.Simple(9, function()
 		hook.Remove("RenderScreenspaceEffects", "draw_end")
 		hook.Remove("HUDShouldDraw", "no_draw_hud")
 	end)
@@ -91,6 +78,19 @@ function GM:RenderScreenspaceEffects()
 		if LocalPlayer().hvision then
 			DrawColorModify(humanh)
 		else
+			local human =
+			{
+				["$pp_colour_addr"] = 0,
+				["$pp_colour_addg"] = 0,
+				["$pp_colour_addb"] = 0,
+				["$pp_colour_brightness"] = -0.15,
+				["$pp_colour_contrast"] = 1,
+				["$pp_colour_colour"] = 1 - ((LocalPlayer():GetMaxHealth() - LocalPlayer():Health()) / LocalPlayer():GetMaxHealth()),
+				["$pp_colour_mulr"] = 0,
+				["$pp_colour_mulg"] = 0,
+				["$pp_colour_mulb"] = 1
+			}
+		
 			DrawColorModify(human)
 		end
 	elseif LocalPlayer():Team() == TEAM_MUTANTS then

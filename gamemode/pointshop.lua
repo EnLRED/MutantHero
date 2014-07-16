@@ -43,6 +43,9 @@ local function open_Shop()
 	weps_t:AddColumn("Weapon")
 	local cost = weps_t:AddColumn("Cost")
 	cost:SetMinWidth(30)
+	cost:SetMaxWidth(30)	
+	local cost = weps_t:AddColumn("Weight")
+	cost:SetMinWidth(30)
 	cost:SetMaxWidth(30)
 	weps_t.OnClickLine = function(parent, line, isselected)
 		surface.PlaySound("buttons/blip1.wav")
@@ -50,14 +53,12 @@ local function open_Shop()
 		for k, v in pairs(weps) do
 			if line:GetValue(1) == v.PrintName then tobuy = v end
 		end
-		
-		for k, v in pairs(ammo) do
-			if line:GetValue(1) == v.PrintName then tobuy = v end
-		end
 	end
 	
 	for k, v in pairs(weps) do
-		if v.Cost then weps_t:AddLine(v.PrintName, v.Cost) end
+		local weight
+		if v.Wt then weight = v.Wt else weight = 1 end
+		if v.Cost and v.IsBuyable then weps_t:AddLine(v.PrintName, v.Cost, weight * 10) end
 	end
 	
 	local ammo_t = vgui.Create("DListView", win)
@@ -69,10 +70,6 @@ local function open_Shop()
 	cost:SetMaxWidth(30)
 	ammo_t.OnClickLine = function(parent, line, isselected)
 		surface.PlaySound("buttons/blip1.wav")
-	
-		for k, v in pairs(weps) do
-			if line:GetValue(1) == v.PrintName then tobuy = v end
-		end
 		
 		for k, v in pairs(ammo) do
 			if line:GetValue(1) == v.PrintName then tobuy = v end
@@ -92,7 +89,14 @@ local function open_Shop()
 			if LocalPlayer():GetMoney() >= tobuy.Cost then
 				local amm = false
 				local num = 0
-				if tobuy.IsAmmo then amm = true num = tobuy.Num end
+				if tobuy.IsAmmo then 
+					amm = true num = tobuy.Num 
+				else
+					local weight = 1
+					if tobuy.Wt then weight = tobuy.Wt end
+					
+					if (LocalPlayer():GetNWFloat("weight_muth") + weight) > 4 then return end
+				end
 			
 				net.Start("pointshop_toserv")
 					net.WriteFloat(tobuy.Cost)

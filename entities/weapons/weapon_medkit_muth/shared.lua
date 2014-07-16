@@ -9,7 +9,7 @@ SWEP.WorldModel			= "models/weapons/w_medkit.mdl"
 
 SWEP.ViewModelFOV		= 54
 SWEP.Slot				= 5
-SWEP.SlotPos			= 3
+SWEP.SlotPos			= 0
 
 SWEP.Primary.ClipSize		= 100
 SWEP.Primary.DefaultClip	= 100

@@ -9,7 +9,7 @@ SWEP.WorldModel			= "models/weapons/w_medkit.mdl"
 
 SWEP.ViewModelFOV		= 54
 SWEP.Slot				= 5
-SWEP.SlotPos			= 3
+SWEP.SlotPos			= 0
 
 SWEP.Primary.ClipSize		= 100
 SWEP.Primary.DefaultClip	= 100
@@ -31,6 +31,8 @@ end
 
 function SWEP:PrimaryAttack()
 	if CLIENT then return end
+	
+	self:SetNextPrimaryFire(CurTime() + 20)
 
 	local tr = util.TraceLine  {
 		start = self.Owner:GetShootPos(),
@@ -47,8 +49,6 @@ function SWEP:PrimaryAttack()
 		
 		timer.Stop("kill_" .. ent:EntIndex())
 		ent:SetColor(Color(255, 255, 255))
-		
-		self.Owner:StripWeapon(self.ClassName)
 	end
 end
 

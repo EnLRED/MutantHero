@@ -21,6 +21,11 @@ SWEP.HoldType = "smg"
 
 SWEP.UseHands              = true
 
+SWEP.IsHeavy = true
+
+SWEP.IsBuyable = true
+SWEP.Wt = 2
+
 SWEP.Primary.ClipSize      = 200
 SWEP.Primary.DefaultClip   = 200
 SWEP.Primary.Delay         = 0.1
@@ -32,4 +37,4 @@ SWEP.Primary.Damage        = 110
 --self.View = Angle(math.Rand(-3, 0), math.Rand(-0.5, 0.5), 0)
 SWEP.Spread = Vector(0.07, 0.07, 0.08)
 
-if CLIENT then SWEP.Cost = 155 end
+if CLIENT then SWEP.Cost = 70 end

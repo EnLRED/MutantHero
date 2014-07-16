@@ -169,7 +169,11 @@ function GM:HUDPaint()
 			end
 		end
 		
-		draw.DrawText("You killed " .. LocalPlayer():GetNWFloat("killed_muth") .. " mutants", "mutanthero_font1", sh / 3, sw / 1.96, Color(255, 255, 255, 150))
+		draw.DrawText("Class " .. string.lower(LocalPlayer():GetClassString()) .. "\nForce " .. math.Round(LocalPlayer():GetNWFloat("force_muth"))
+		.. "\nWeapons " .. LocalPlayer():GetNWFloat("weight_muth") .. " (4 max) F3 - Drop weapon"
+		.. "\nYou killed " .. LocalPlayer():GetNWFloat("killed_muth") .. " mutants"
+		.. "\nAir " .. math.Round(LocalPlayer():GetNWFloat("air_muth")) .. "%"
+		.. "\nMoney " .. LocalPlayer():GetMoney() .. "$", "mutanthero_smallf", sh / 3, sw / 2.15, Color(255, 255, 255, 150))
 		
 		surface.SetDrawColor(Color(0, 150, 0))
 		surface.DrawRect(ScrW() / 13, 11, pnv_life * 6, 20)

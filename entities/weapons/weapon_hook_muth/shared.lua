@@ -51,6 +51,8 @@ SWEP.Secondary.DefaultClip	= -1
 SWEP.Secondary.Automatic	= true
 SWEP.Secondary.Ammo			= "none"
 
+SWEP.IsMelee = true
+
 SWEP.Dmg = 110
 SWEP.MissSound = "weapons/iceaxe/iceaxe_swing1.wav"
 SWEP.HitSound = "weapons/crowbar/crowbar_impact" .. math.random(1, 2) ..".wav"

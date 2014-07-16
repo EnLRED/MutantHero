@@ -41,6 +41,8 @@ SWEP.Secondary.Ammo			= "none"
 
 SWEP.UseHands = true
 
+SWEP.IsMelee = true
+
 SWEP.Dmg = 80
 SWEP.MissSound = "weapons/iceaxe/iceaxe_swing1.wav"
 SWEP.HitSound = "weapons/knife/knife_hitwall1.wav"

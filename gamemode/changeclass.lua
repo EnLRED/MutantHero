@@ -13,16 +13,21 @@ function open_ChangeCls()
 		draw.RoundedBox(0, 0, 0, w, t, Color(0, 0, 0, 170))
 		draw.RoundedBox(0, 10, 10, w - 20, t - 20, Color(100, 100, 100, 200))
 	end
+	win.Think = function()
+		if LocalPlayer():Team() == TEAM_MUTANTS then if win and IsValid(win) then win:Close() end end
+	end
 	win:MakePopup()
 	
-	timer.Simple(12, function()
-		if win and IsValid(win) then win:Close() else return end
-	
-		LocalPlayer():ChatPrint("Your class is heavy now")
+	timer.Create("change_cls" .. LocalPlayer():EntIndex(), 12, 1, function()
+		if IsValid(LocalPlayer()) then
+			if win and IsValid(win) then win:Close() else return end
 		
-		net.Start("change_class")
-			net.WriteFloat(CLASS_HUMANS_HEAVYS)
-		net.SendToServer()
+			LocalPlayer():ChatPrint("Your class is heavy now")
+			
+			net.Start("change_class")
+				net.WriteFloat(CLASS_HUMANS_HEAVYS)
+			net.SendToServer()
+		end
 	end)
 	
 	local close = vgui.Create("DButton", win)
@@ -33,6 +38,7 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end 
 		
 		LocalPlayer():ChatPrint("Your class is heavy now")
+		timer.Stop("change_cls" .. LocalPlayer():EntIndex())
 		
 		net.Start("change_class")
 			net.WriteFloat(CLASS_HUMANS_HEAVYS)
@@ -48,6 +54,7 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end
 		
 		LocalPlayer():ChatPrint("Your class is medic now")
+		timer.Stop("change_cls" .. LocalPlayer():EntIndex())
 		
 		net.Start("change_class")
 			net.WriteFloat(CLASS_HUMANS_MEDIC)
@@ -74,6 +81,7 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end
 		
 		LocalPlayer():ChatPrint("Your class is engineer now")
+		timer.Stop("change_cls" .. LocalPlayer():EntIndex())
 		
 		net.Start("change_class")
 			net.WriteFloat(CLASS_HUMANS_ENGINEER)
@@ -100,6 +108,7 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end
 		
 		LocalPlayer():ChatPrint("Your class is light soldier now")
+		timer.Stop("change_cls" .. LocalPlayer():EntIndex())
 		
 		net.Start("change_class")
 			net.WriteFloat(CLASS_HUMANS_LIGHTS)
@@ -126,6 +135,7 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end
 		
 		LocalPlayer():ChatPrint("Your class is heavy now")
+		timer.Stop("change_cls" .. LocalPlayer():EntIndex())
 		
 		net.Start("change_class")
 			net.WriteFloat(CLASS_HUMANS_HEAVYS)
@@ -152,6 +162,7 @@ function open_ChangeCls()
 		if win and IsValid(win) then win:Close() end
 		
 		LocalPlayer():ChatPrint("Your class is berserk now")
+		timer.Stop("change_cls" .. LocalPlayer():EntIndex())
 		
 		net.Start("change_class")
 			net.WriteFloat(CLASS_HUMANS_BERSERK)

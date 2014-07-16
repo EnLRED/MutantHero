@@ -43,8 +43,12 @@ function ENT:Think()
 					if self.Wait >= 9 then
 						SetGlobalBool("radio_clk", true)
 						
-						for k, v in pairs(player.GetAll()) do
-							v:ChatPrint("Go to evacuation zone! Hurry up!")
+						v.ClkedRadio = true
+						
+						for _, p in pairs(player.GetAll()) do
+							p:ChatPrint("Go to evacuation zone! Hurry up!")
+							
+							p:SendLua("surface.PlaySound('muth/creepy_sound.mp3')")
 						end
 						
 						timer.Create("count_round_end", 1, 181, function()

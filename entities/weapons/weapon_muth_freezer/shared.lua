@@ -112,18 +112,16 @@ function SWEP:PrimaryAttack()
 	local ent = tr.Entity
 	
 	if IsValid(ent) and ent:IsNPC() then
-		for k, v in pairs(ents.FindInSphere(tr.HitPos, 120)) do
+		for k, v in pairs(ents.FindInSphere(tr.HitPos, 100)) do
 			if IsValid(v) and v:IsPlayer() and v:Team() == TEAM_MUTANTS then
-				v:Lock()
+				v:Freeze(true)
 				
 				timer.Create("unlock_" .. v:EntIndex(), 4, 1, function()
-					if IsValid(v) then v:UnLock() end
+					if IsValid(v) then v:Freeze(false) end
 				end)
 			end
 		end
 	end
-	
-	if SERVER then self.Owner:StripWeapon(self.ClassName) end
 end
 
 function SWEP:Holster()
